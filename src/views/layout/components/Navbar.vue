@@ -1,9 +1,13 @@
 <template>
   <div class="navbar">
-         <div class="img">
-           <img :src="title" class="title" alt="">
+         <div class="title">
+           <img :src="logo" alt="">
+           <p>三维激光哨兵</p>
          </div>
     <div class="tabs">
+      <div class="sidebar">
+        <SubMenuTop />
+      </div>
       <el-popover placement="bottom" width="150" trigger="click">
         <ul class="ul1">
           <li>
@@ -28,14 +32,23 @@
 <script>
 
 import { mapGetters } from 'vuex'
-import title from '@/assets/img/zjzhhs.png'
+import logo from '@/assets/img/logo.png'
+import SubMenuTop from './Sidebar/top'
 
 export default {
   name: 'Navbar',
   data () {
     return {
-      title
+      logo,
+      defaultProps: {
+        children: 'children',
+        label: 'title',
+        index: 'path'
+      }
     }
+  },
+  components: {
+    SubMenuTop
   },
   computed: {
     ...mapGetters([
@@ -46,6 +59,12 @@ export default {
     logout () {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
+      })
+    },
+    onGetMenu (item) {
+      this.$router.push({
+        path: item.path,
+        query: { t: new Date().getTime() }
       })
     }
   }
@@ -63,10 +82,20 @@ export default {
     justify-content: space-between;
 
     .title {
-      width: 290px;
+      margin: 0 20px;
+    p{
+      margin-left: 10px;
+      font-family:AdobeHeiti;
+      font-size: 30px;
+      color: #fff;
+    }
+      display: flex;
+      align-items: center;
     }
 
     .tabs {
+      display: flex;
+      align-items: center;
       span {
         color: #ffff;
         display: flex;

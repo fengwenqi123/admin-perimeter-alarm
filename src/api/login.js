@@ -9,7 +9,7 @@ export function login (loginName, password, loginType, loginSource) {
     loginSource
   })
   return request({
-    url: '/login/user/login',
+    url: '/simple/user/login',
     method: 'post',
     data
   })
@@ -30,7 +30,7 @@ export function getInfo (token) {
     accessToken: token
   })
   return request({
-    url: '/login/user/online',
+    url: '/simple/user/online',
     method: 'POST',
     data
   })

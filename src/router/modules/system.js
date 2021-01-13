@@ -7,7 +7,7 @@ const system = {
   redirect: '/system/AuthorizeManagement',
   name: 'system',
   alwaysShow: true,
-  meta: { title: '系统管理', icon: 'sys', roles: ['sys'] },
+  meta: { title: '系统管理', roles: ['sys'] },
   children: [
     {
       path: 'AuthorizeManagement',
@@ -38,6 +38,12 @@ const system = {
       name: 'UserManagement',
       component: () => import('@/views/system/UserManagement/index'),
       meta: { keepAlive: false, title: '用户管理', roles: ['sys:personnel'] }
+    },
+    {
+      path: 'alarmParam',
+      name: 'alarmParam',
+      component: () => import('@/views/system/alarmParam/index'),
+      meta: { keepAlive: false, title: '告警参数', roles: ['sys:personnel'] }
     }
   ]
 }

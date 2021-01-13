@@ -5,7 +5,7 @@ import { showFullScreenLoading, tryHideFullScreenLoading } from './load.js'
 const timeout = 10000
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'https://api.cjbe88.com', // api的base_url
+  baseURL: 'http://192.168.1.120:11002/', // api的base_url
   timeout
 })
 

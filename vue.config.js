@@ -27,6 +27,8 @@ module.exports = {
     }
   },
   chainWebpack (config) {
+    // 修复HMR
+    config.resolve.symlinks(true)
     config.optimization.minimizer('terser').tap((args) => {
       // 去除生产环境console
       args[0].terserOptions.compress.drop_console = true

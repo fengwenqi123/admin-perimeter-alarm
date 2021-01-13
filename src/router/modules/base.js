@@ -1,17 +1,14 @@
 const base = [{
   path: '/',
-  redirect: '/home'
+  redirect: '/system'
 }, {
   path: '/home',
-  component: () => import('@/views/home'),
-  hidden: true
+  component: () => import('@/views/home')
 }, {
   path: '/login',
-  component: () => import('@/views/login/index'),
-  hidden: true
+  component: () => import('@/views/login/index')
 }, {
   path: '/404',
-  component: () => import('@/views/404'),
-  hidden: true
+  component: () => import('@/views/404')
 }]
 export default base
