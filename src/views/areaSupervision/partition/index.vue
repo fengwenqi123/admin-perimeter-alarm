@@ -96,9 +96,6 @@
             <template slot-scope="scope">
               <el-button-group>
                 <div class="operation">
-                  <el-button class="table_button" icon="el-icon-search" size="small" type="text"
-                             @click="handleClickInfo(scope.row)">查看
-                  </el-button>
                   <el-button class="table_button" icon="el-icon-edit-outline" size="small" type="text"
                              @click="handleClickModify(scope.row)">编辑
                   </el-button>
@@ -156,9 +153,9 @@
       v-el-drag-dialog
       :before-close="handleClose"
       :title="title"
-      width="80%"
+      width="90%"
       :visible.sync="addDialog"
-      top="6vh">
+      top="3vh">
       <information
         v-if="addDialog"
         :readonly="readonly"
@@ -208,11 +205,10 @@ export default {
     this.list()
   },
   methods: {
-    handleClickInfo (row) {
-      this.title = '查看'
-      this.row_id = row.id
-      this.readonly = true
+    add () {
+      this.title = '新增'
       this.addDialog = true
+      this.row_id = null
     },
     handleClickModify (row) {
       this.title = '编辑'

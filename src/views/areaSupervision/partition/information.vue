@@ -2,14 +2,20 @@
   <div class="information">
     <div class="information-main">
       <el-scrollbar class="scrolls">
-        <div class="information-form">
-          <el-tabs :tab-position="tabPosition" style="height: 600px;" type="border-card">
+        <div class="information-form" v-if="show">
+          <el-tabs :tab-position="tabPosition" type="border-card">
             <el-tab-pane label="基本信息">
               <essentialInfo :Val.sync="essentialInfoVal"></essentialInfo>
             </el-tab-pane>
-            <el-tab-pane label="控制服务">配置管理</el-tab-pane>
-            <el-tab-pane label="追踪视频">角色管理</el-tab-pane>
-            <el-tab-pane label="全景视频">定时任务补偿</el-tab-pane>
+            <el-tab-pane label="控制服务">
+              <control :Val.sync="controlVal"></control>
+            </el-tab-pane>
+            <el-tab-pane label="追踪视频">
+              <track-video :Val.sync="videoPart"></track-video>
+            </el-tab-pane>
+            <el-tab-pane label="全景视频">
+              <panorama :Val.sync="videoWhole"></panorama>
+            </el-tab-pane>
           </el-tabs>
         </div>
       </el-scrollbar>
@@ -19,7 +25,7 @@
         icon="el-icon-document"
         size="small"
         class="blueButton"
-        @click="submitForm('addForm')"
+        @click="submit()"
       >
         保存
       </el-button>
@@ -37,7 +43,11 @@
 
 <script>
 import essentialInfo from './information/essentialInfo'
+import control from './information/control'
+import trackVideo from './information/Track'
+import panorama from './information/panorama'
 import dialogFormMixin from '@/mixins/dialogFormMixin'
+import { getDataById, add } from '@/api/partition'
 export default {
   mixins: [dialogFormMixin],
   props: {
@@ -49,7 +59,10 @@ export default {
     }
   },
   components: {
-    essentialInfo
+    essentialInfo,
+    control,
+    trackVideo,
+    panorama
   },
   data () {
     return {
@@ -57,16 +70,113 @@ export default {
       essentialInfoVal: {
         name: null,
         description: null,
-        status: '1'
-      }
+        status: '1',
+        point: null,
+        image: null
+      },
+      controlVal: {
+        ip: null,
+        port: null,
+        imageUrl: null
+      },
+      videoPart: [{
+        Title: null,
+        IP: null,
+        Port: null,
+        UserName: null,
+        Password: null,
+        Channel: null,
+        StreamType: null
+      }, {
+        Title: null,
+        IP: null,
+        Port: null,
+        UserName: null,
+        Password: null,
+        Channel: null,
+        StreamType: null
+      }],
+      videoWhole: [{
+        Title: null,
+        IP: null,
+        Port: null,
+        UserName: null,
+        Password: null,
+        Channel: null,
+        StreamType: null
+      }, {
+        Title: null,
+        IP: null,
+        Port: null,
+        UserName: null,
+        Password: null,
+        Channel: null,
+        StreamType: null
+      }],
+      show: false
     }
   },
   created () {
+    this.getDataByIdFun()
   },
-  methods: {}
+  methods: {
+    getDataByIdFun () {
+      if (this.id) {
+        getDataById(this.id).then(response => {
+          this.videoPart = JSON.parse(response.data.videoPartJson)
+          this.videoWhole = JSON.parse(response.data.videoWholeJson)
+          this.controlVal = {
+            ip: response.data.ip,
+            port: response.data.port,
+            imageUrl: response.data.imageUrl
+          }
+          this.essentialInfoVal = {
+            name: response.data.name,
+            description: response.data.description,
+            status: response.data.status.toString(),
+            point: JSON.parse(response.data.pointJson),
+            image: response.data.image
+          }
+          this.show = true
+        })
+      } else {
+        this.show = true
+      }
+    },
+    submit () {
+      const point = []
+      this.essentialInfoVal.point.forEach(item => {
+        const arr = item.split(',')
+        const obj = {}
+        obj.X = arr[0]
+        obj.Y = arr[1]
+        point.push(obj)
+      })
+      add({
+        id: this.id,
+        name: this.essentialInfoVal.name,
+        imageUrl: this.controlVal.imageUrl,
+        ip: this.controlVal.ip,
+        port: this.controlVal.port,
+        videoWholeJson: JSON.stringify(this.videoWhole),
+        videoPartJson: JSON.stringify(this.videoPart),
+        pointJson: JSON.stringify(point),
+        description: this.essentialInfoVal.description,
+        image: this.essentialInfoVal.image,
+        status: this.essentialInfoVal.status
+      }).then(response => {
+
+      })
+    },
+    cancel () {
+    }
+  }
 
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.information-main{
+  height: 700px;
+}
 </style>

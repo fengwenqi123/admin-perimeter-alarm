@@ -134,16 +134,6 @@ export default {
         this.val.point = newVal
       },
       deep: true
-    },
-    plane1 () {
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
-      this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
-      this.draw(this.plane1, this.plane2)
-    },
-    plane2 () {
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
-      this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
-      this.draw(this.plane1, this.plane2)
     }
   },
   data () {
@@ -163,38 +153,24 @@ export default {
   },
   methods: {
     init () {
+      if (this.val.point) {
+        this.laser1 = `${this.val.point[0].X},${this.val.point[0].Y}`
+        this.plane1 = `${this.val.point[1].X},${this.val.point[1].Y}`
+        this.laser2 = `${this.val.point[2].X},${this.val.point[2].Y}`
+        this.plane2 = `${this.val.point[3].X},${this.val.point[3].Y}`
+      }
       if (this.val.image) {
         this.image = new Image()
         this.image.src = this.val.image
         this.image.onload = () => {
           this.getBase64Img()
-          if (this.val.point) {
-            this.laser1 = `${this.val.point[0].X},${this.val.point[0].Y}`
-            this.plane1 = `${this.val.point[1].X},${this.val.point[1].Y}`
-            this.laser2 = `${this.val.point[2].X},${this.val.point[2].Y}`
-            this.plane2 = `${this.val.point[3].X},${this.val.point[3].Y}`
-          }
           // 即为转换为base64格式的图片形式
         }
       }
     },
-    draw (p1, p2) {
-      if (p1) {
-        var arr = p1.split(',')
-        this.ctx.fillStyle = STARTCOLOR
-        this.ctx.beginPath()
-        this.ctx.arc(arr[0] * this.canvas.width, arr[1] * this.canvas.height, 5, 0, Math.PI * 2, true)
-        this.ctx.closePath()
-        this.ctx.fill()
-      }
-      if (p2) {
-        var arr1 = p2.split(',')
-        this.ctx.fillStyle = ENDCOLOR
-        this.ctx.beginPath()
-        this.ctx.arc(arr1[0] * this.canvas.width, arr1[1] * this.canvas.height, 5, 0, Math.PI * 2, true)
-        this.ctx.closePath()
-        this.ctx.fill()
-      }
+    draw (img) {
+      this.val.point[1].X * img.width
+      this.val.point[1].X * img.width
     },
     getStatus (val) {
       return val === '1' ? '启用' : '禁用'
@@ -218,9 +194,20 @@ export default {
       this.canvas.height = this.image.height
       this.ctx = this.canvas.getContext('2d')
       this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
+
+      var ext = this.image.src.substring(this.image.src.lastIndexOf('.') + 1).toLowerCase()
+      var dataURL = this.canvas.toDataURL('image/' + ext)
+      return dataURL
+    },
+    // 添加点击事件
+    editActive (i) {
+      this.active = i
+      this.canvas.addEventListener('click', this.pointFun)
     },
     // 获取定位点，标记
     pointFun (event) {
+      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
+      this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
       var rect = this.canvas.getBoundingClientRect()
       var diffX = event.clientX - rect.left
       var diffY = event.clientY - rect.top
@@ -228,16 +215,38 @@ export default {
       var y = (diffY / this.canvas.height).toFixed(10)
       if (this.active === 1) {
         this.plane1 = `${x},${y}`
+        this.ctx.fillStyle = STARTCOLOR
+        this.ctx.beginPath()
+        this.ctx.arc(diffX, diffY, 5, 0, Math.PI * 2, true)
+        this.ctx.closePath()
+        this.ctx.fill()
+        if (this.plane2) {
+          var arr = this.plane2.split(',')
+          const color = ENDCOLOR
+          this.arc(color, arr)
+        }
       }
       if (this.active === 2) {
         this.plane2 = `${x},${y}`
+        this.ctx.fillStyle = ENDCOLOR
+        this.ctx.beginPath()
+        this.ctx.arc(diffX, diffY, 5, 0, Math.PI * 2, true)
+        this.ctx.closePath()
+        this.ctx.fill()
+        if (this.plane1) {
+          var arr1 = this.plane1.split(',')
+          const color = STARTCOLOR
+          this.arc(color, arr1)
+        }
       }
       this.canvas.removeEventListener('click', this.pointFun)
     },
-    // 添加点击事件
-    editActive (i) {
-      this.active = i
-      this.canvas.addEventListener('click', this.pointFun)
+    arc (color, arr) {
+      this.ctx.fillStyle = color
+      this.ctx.beginPath()
+      this.ctx.arc(arr[0] * this.canvas.width, arr[1] * this.canvas.height, 5, 0, Math.PI * 2, true)
+      this.ctx.closePath()
+      this.ctx.fill()
     }
   }
 }
