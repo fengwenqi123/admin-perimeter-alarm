@@ -169,7 +169,7 @@
 
 <script>
 import titleHeader from '@/components/title/index'
-import { lists } from '@/api/partition'
+import { lists, delt, enable, disable } from '@/api/partition'
 import Pagination from '@/components/Paginations'
 import elDragDialog from '@/directive/el-drag-dialog'
 import tableMixin from '@/mixins/tableMixin'
@@ -229,11 +229,31 @@ export default {
       })
     },
     _delt (listId) {
-
+      delt(listId).then(response => {
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+        this.list()
+      })
     },
     _enable (listId) {
+      enable(listId).then(response => {
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+        this.list()
+      })
     },
     _disable (listId) {
+      disable(listId).then(response => {
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+        this.list()
+      })
     }
   }
 }

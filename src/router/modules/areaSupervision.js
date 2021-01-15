@@ -13,6 +13,11 @@ const areaSupervision = {
       name: 'partition',
       component: () => import('@/views/areaSupervision/partition/index'),
       meta: { keepAlive: false, title: '分区管理', roles: ['sys'] }
+    }, {
+      path: 'defenseArea',
+      name: 'defenseArea',
+      component: () => import('@/views/areaSupervision/defenseArea/index'),
+      meta: { keepAlive: false, title: '防区管理', roles: ['sys'] }
     }
   ]
 }

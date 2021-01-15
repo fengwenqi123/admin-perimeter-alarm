@@ -65,7 +65,7 @@ export default {
     },
     cancel () {
       this.handleClose()
-      this.list()
+      // this.list()
     },
     submit () {
       this.handleClose()
@@ -144,6 +144,81 @@ export default {
           num.push(item.id)
         })
         this._disable(num)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    // 布防
+    Defence () {
+      if (this.selectData.length === 0) {
+        this.$message({
+          message: '请先选择'
+        })
+        return
+      }
+      this.$confirm('此操作即将启动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var num = []
+        this.selectData.forEach((item, index) => {
+          num.push(item.id)
+        })
+        this._defence(num)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    // 撤防
+    Garrison () {
+      if (this.selectData.length === 0) {
+        this.$message({
+          message: '请先选择'
+        })
+        return
+      }
+      this.$confirm('此操作即将启动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var num = []
+        this.selectData.forEach((item, index) => {
+          num.push(item.id)
+        })
+        this._garrison(num)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    // 旁路
+    Bypass () {
+      if (this.selectData.length === 0) {
+        this.$message({
+          message: '请先选择'
+        })
+        return
+      }
+      this.$confirm('此操作即将启动, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var num = []
+        this.selectData.forEach((item, index) => {
+          num.push(item.id)
+        })
+        this._bypass(num)
       }).catch(() => {
         this.$message({
           type: 'info',

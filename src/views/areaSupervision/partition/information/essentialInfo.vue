@@ -87,10 +87,8 @@
           </div>
         </div>
 
-        <div class="common file">
-          <div class="file">选择文件
-            <input type="file" name="" id="" @change="chose">
-          </div>
+        <div class="common file pic">
+          <input type="file" name="" id="" @change="chose">
           <canvas v-if="image" id="myCanvas"></canvas>
           <div v-else class="up-load">
             <i class="el-icon-plus"></i>
@@ -199,6 +197,12 @@ export default {
     getStatus (val) {
       return val === '1' ? '启用' : '禁用'
     },
+    // 即为转换为base64格式的图片形式
+    baseImg () {
+      var ext = this.image.src.substring(this.image.src.lastIndexOf('.') + 1).toLowerCase()
+      var dataURL = this.canvas.toDataURL('image/' + ext)
+      return dataURL
+    },
     chose (e) {
       if (e.target.files[0]) {
         this.image = new Image()
@@ -206,8 +210,8 @@ export default {
         this.plane2 = null
         this.image.src = window.URL.createObjectURL(e.target.files[0])
         this.image.onload = () => {
-          this.val.image = this.getBase64Img()
-          // 即为转换为base64格式的图片形式
+          this.getBase64Img()
+          this.val.image = this.baseImg()
         }
       }
     },
@@ -264,11 +268,8 @@ export default {
       display: flex;
       align-items: flex-start;
 
-      .file {
-        margin-left: 180px;
-      }
-
       .common {
+        width: 400px;
         i {
           margin-left: 10px;
           cursor: pointer;
@@ -288,6 +289,13 @@ export default {
             font-size: 30px;
           }
         }
+      }
+      .file {
+        margin-left: 20px;
+        width: auto;
+      }
+      .pic{
+        overflow: auto;
       }
     }
   }

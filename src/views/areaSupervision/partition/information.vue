@@ -165,10 +165,15 @@ export default {
         image: this.essentialInfoVal.image,
         status: this.essentialInfoVal.status
       }).then(response => {
-
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+        this.$emit('submit')
       })
     },
     cancel () {
+      this.$emit('cancel')
     }
   }
 
