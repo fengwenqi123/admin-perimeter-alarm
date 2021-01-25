@@ -158,7 +158,6 @@
       top="3vh">
       <information
         v-if="addDialog"
-        :readonly="readonly"
         :id="row_id"
         @cancel="cancel"
         @submit="submit"

@@ -7,7 +7,7 @@ function startLoading () {
     lock: true,
     text: '正在加载数据...',
     background: 'rgba(255, 255, 255, 0.5)',
-    target: '#scrolls'
+    target: '.app-main'
   })
 }
 

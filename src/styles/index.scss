@@ -66,3 +66,14 @@ div:focus {
 .app-container {
   padding: 20px;
 }
+
+.smart{
+  .el-card__header{
+    padding: 12px 20px!important;
+  }
+  .el-card__body{
+    position: relative;
+  }
+}
+
+

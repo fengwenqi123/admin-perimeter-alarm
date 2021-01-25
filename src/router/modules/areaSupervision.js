@@ -18,6 +18,11 @@ const areaSupervision = {
       name: 'defenseArea',
       component: () => import('@/views/areaSupervision/defenseArea/index'),
       meta: { keepAlive: false, title: '防区管理', roles: ['sys'] }
+    }, {
+      path: 'timeTemplate',
+      name: 'timeTemplate',
+      component: () => import('@/views/areaSupervision/timeTemplate/index'),
+      meta: { keepAlive: false, title: '模版设置', roles: ['sys'] }
     }
   ]
 }

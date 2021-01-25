@@ -20,7 +20,7 @@
         </div>
       </el-scrollbar>
     </div>
-    <div slot="footer" class="information-foot"  v-if="!readonly">
+    <div slot="footer" class="information-foot">
       <el-button
         icon="el-icon-document"
         size="small"
@@ -51,9 +51,6 @@ import { getDataById, add } from '@/api/partition'
 export default {
   mixins: [dialogFormMixin],
   props: {
-    readonly: {
-      type: Boolean
-    },
     id: {
       type: String
     }

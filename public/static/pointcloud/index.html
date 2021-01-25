@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="./three.min.js"></script>
+    <script src="./js/controls/OrbitControls.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="./jsm/libs/stats.module.js"></script>
+</head>
+
+<body style="margin:0;">
+<div id="container"></div>
+<!--	<button style="position: fixed;top:10px;right:10px;" id="showbtn" data-work="false">开启自动巡展模式</button>-->
+<script type="module">
+
+  // import Stats from './jsm/libs/stats.module.js';
+
+  let camera, scene, renderer, stats, controller
+
+  init()
+  animate()
+
+  function init () {
+    scene = new THREE.Scene()
+
+    const axesHelper = new THREE.AxesHelper(5)
+    scene.add(axesHelper)
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000)
+    camera.position.set(430, 200, 0)
+    camera.lookAt(scene.position)
+    camera.updateMatrix()
+
+    // =================================================================
+    const geometry = new THREE.BufferGeometry()
+    const color = new THREE.Color(1, 0, 0)
+    let positions = null
+    let colors = null
+    let minX = Number.MAX_VALUE
+    let maxX = Number.MIN_VALUE
+    $.ajax({
+      url: './111.pts',
+      data: null,
+      async: false,
+      success: function (re) {
+        const arr = re.trim().split('\n')
+        const data = []
+        const colorArr = []
+        arr.forEach((it, idx) => {
+          const strs = it.split(' ')
+          const x = Number(strs[0])
+          if (x === 0) {
+            return
+          }
+          if (x < minX) {
+            minX = x
+          }
+          if (x > maxX) {
+            maxX = x
+          }
+          data.push([Number(strs[0]), Number(strs[1]), Number(strs[2])])
+          colorArr.push([Number(strs[3]), Number(strs[4]), Number(strs[5])])
+        })
+        data.forEach(it => {
+          it[0] = it[0] - minX
+        })
+        positions = new Float32Array(data.length * 3)
+        colors = new Float32Array(data.length * 3)
+        data.forEach((it, idx) => {
+          positions[idx * 3 + 0] = it[0] * -1
+          positions[idx * 3 + 1] = it[2]
+          positions[idx * 3 + 2] = it[1]
+          colors[3 * idx + 0] = color.r;
+          colors[3 * idx + 1] = color.g;
+          colors[3 * idx + 2] = color.b;
+        })
+        console.log(new THREE.BufferAttribute(colors, 3))
+      }
+    })
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+    geometry.computeBoundingBox()
+    const material = new THREE.PointsMaterial({
+      size: 0.05,
+      vertexColors: true
+    })
+    const pcBuffer = new THREE.Points(geometry, material)
+    pcBuffer.scale.set(3, 10, 10)
+    console.log(minX, maxX)
+    pcBuffer.position.set(Math.round((maxX - minX) * 3 * (0.33)), 0, 0)
+    scene.add(pcBuffer)
+    // ==============================================================
+
+    renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setClearColor('rgba(255,255,255,1)',1.0)
+    document.body.appendChild(renderer.domElement)
+
+    controller = new THREE.OrbitControls(camera, renderer.domElement)
+    controller.autoRotate = false
+
+    // stats = new Stats();
+    // document.body.appendChild(stats.dom);
+
+    window.addEventListener('resize', onWindowResize, false)
+
+  }
+
+  function onWindowResize () {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+  }
+
+  function animate () {
+    requestAnimationFrame(animate)
+    renderer.render(scene, camera)
+    controller.update()
+    stats && stats.update()
+  }
+
+  document.getElementById('showbtn').addEventListener('click', (e) => {
+    const dom = e.target
+    if (dom.getAttribute('data-work') === 'true') {
+      controller.autoRotate = false
+      dom.setAttribute('data-work', 'false')
+      console.log('关闭自动巡展')
+      dom.innerText = '开启自动巡展模式'
+    } else {
+      controller.autoRotate = true
+      dom.setAttribute('data-work', 'true')
+      console.log('开启自动巡展')
+      dom.innerText = '关闭自动巡展模式'
+    }
+  })
+
+
+</script>
+</body>
+
+</html>

@@ -1,13 +1,13 @@
 <template>
   <div class="navbar">
          <div class="title">
-           <img :src="logo" alt="">
+<!--           <img :src="logo" alt="">-->
            <p>三维激光哨兵</p>
          </div>
     <div class="tabs">
-      <div class="sidebar">
-        <SubMenuTop />
-      </div>
+<!--      <div class="sidebar">-->
+<!--        <SubMenuTop />-->
+<!--      </div>-->
       <el-popover placement="bottom" width="150" trigger="click">
         <ul class="ul1">
           <li>
@@ -33,7 +33,7 @@
 
 import { mapGetters } from 'vuex'
 import logo from '@/assets/img/logo.png'
-import SubMenuTop from './Sidebar/top'
+// import SubMenuTop from './Sidebar/top'
 
 export default {
   name: 'Navbar',
@@ -47,9 +47,9 @@ export default {
       }
     }
   },
-  components: {
-    SubMenuTop
-  },
+  // components: {
+  //   SubMenuTop
+  // },
   computed: {
     ...mapGetters([
       'userInfo'

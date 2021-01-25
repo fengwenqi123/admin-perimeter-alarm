@@ -4,6 +4,8 @@ import base from './modules/base'
 import system from './modules/system'
 import alarmInfo from './modules/alarmInfo'
 import areaSupervision from './modules/areaSupervision'
+import statisticalAnalysis from './modules/statisticalAnalysis'
+import smartMonitor from './modules/smartMonitor'
 
 Vue.use(Router)
 
@@ -18,7 +20,7 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouterMap = [
-  areaSupervision, system, alarmInfo,
+  smartMonitor, alarmInfo, areaSupervision, statisticalAnalysis, system,
   {
     path: '*',
     redirect: '/404',

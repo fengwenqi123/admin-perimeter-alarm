@@ -13,7 +13,7 @@
           </el-switch>
         </el-tooltip>
           <div class="checkbox">
-            <el-checkbox v-model="val.oneLevelJson.oneLevelJson">声光告警</el-checkbox>
+            <el-checkbox v-model="val.oneLevelJson.VoiceStatus">声光告警</el-checkbox>
             <el-checkbox v-model="val.oneLevelJson.LightStatus">灯光告警</el-checkbox>
             <el-checkbox v-model="val.oneLevelJson.CenterStatus">指挥中心告警</el-checkbox>
           </div>
@@ -33,7 +33,7 @@
           </el-switch>
         </el-tooltip>
         <div class="checkbox">
-          <el-checkbox v-model="val.twoLevelJson.oneLevelJson">声光告警</el-checkbox>
+          <el-checkbox v-model="val.twoLevelJson.VoiceStatus">声光告警</el-checkbox>
           <el-checkbox v-model="val.twoLevelJson.LightStatus">灯光告警</el-checkbox>
           <el-checkbox v-model="val.twoLevelJson.CenterStatus">指挥中心告警</el-checkbox>
         </div>

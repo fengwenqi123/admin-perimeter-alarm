@@ -67,7 +67,10 @@ import baseInfo from './information/baseInfo'
 import alarmSetting from './information/alarmSetting'
 import timeTemp from './information/timeTemp'
 import alarmArea from './information/alarmArea'
-import { add, getDataById } from '@/api/defenseArea'
+import { add, getDataById, listsNoPage } from '@/api/defenseArea'
+const currentColor = 'yellow'
+const otherColor = '#828282'
+const ctxLineWidth = 4
 
 export default {
   mixins: [dialogFormMixin],
@@ -91,12 +94,13 @@ export default {
   watch: {
     alarmAreaVal: {
       handler (newVal) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         if (newVal.minDistance && newVal.maxDistance) {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+          this.getArea()
           const x = this.origin.X * this.$refs.iamge.width
           const y1 = (this.origin.Y - newVal.minDistance * this.unit) * this.$refs.iamge.height
           const y2 = (this.origin.Y - newVal.maxDistance * this.unit) * this.$refs.iamge.height
-          this.ctx.strokeStyle = 'yellow'
+          this.ctx.strokeStyle = currentColor
           this.ctx.beginPath()
           this.ctx.moveTo(x, y1)
           this.ctx.lineTo(x, y2)
@@ -141,7 +145,8 @@ export default {
       ctx: null,
       pointJson: null,
       unit: null,
-      origin: null
+      origin: null,
+      pointList: null
     }
   },
   created () {
@@ -154,6 +159,7 @@ export default {
         // 数组奇数位的xy对应偶数位的yx
         this.pointJson = JSON.parse(this.areaInfo.pointJson)
         this.calculation()
+        this.getListFun()
         // 图片加载完成初始化canvas
         const newImg = new Image()
         newImg.src = this.areaInfo.image
@@ -162,7 +168,9 @@ export default {
         }
       }
       if (this.id) {
-        this.getDataByIdFun()
+        setTimeout(() => {
+          this.getDataByIdFun()
+        }, 500)
       }
     },
     // 根据id查详情
@@ -175,18 +183,20 @@ export default {
         this.timeTempVal.templateName = response.data.templateName
         this.baseInfoVal.level = response.data.level
         this.alarmSetVal.oneLevelStatus = response.data.oneLevelStatus.toString()
-        this.alarmSetVal.oneLevelJson = JSON.parse(response.data.oneLevelJson)
+        this.alarmSetVal.oneLevelJson = this.NumToBoolean(JSON.parse(response.data.oneLevelJson))
         this.alarmSetVal.twoLevelStatus = response.data.twoLevelStatus.toString()
-        this.alarmSetVal.twoLevelJson = JSON.parse(response.data.twoLevelJson)
+        this.alarmSetVal.twoLevelJson = this.NumToBoolean(JSON.parse(response.data.twoLevelJson))
         this.point = JSON.parse(response.data.pointJson)
         this.baseInfoVal.status = response.data.status.toString()
         this.baseInfoVal.description = response.data.description
-        this.unitCon()
+        this.alarmAreaVal.minDistance = response.data.miniRange
+        this.alarmAreaVal.maxDistance = response.data.maxRange
+        // this.unitCon()
       })
     },
     unitCon () {
-      this.alarmAreaVal.minDistance = ((this.origin.Y - this.point[0].Y) / this.unit).toFixed(2)
-      this.alarmAreaVal.maxDistance = ((this.origin.Y - this.point[1].Y) / this.unit).toFixed(2)
+      this.alarmAreaVal.minDistance = ((this.origin.Y - this.point[0].Y) / this.unit).toFixed(0)
+      this.alarmAreaVal.maxDistance = ((this.origin.Y - this.point[1].Y) / this.unit).toFixed(0)
     },
     calculation () {
       // 设置原点
@@ -199,10 +209,36 @@ export default {
       this.canvas.width = this.$refs.iamge.width
       this.canvas.height = this.$refs.iamge.height
       this.ctx = this.canvas.getContext('2d')
+      this.ctx.lineWidth = ctxLineWidth
+    },
+    // 获得分区下所有防区范围
+    getListFun () {
+      listsNoPage(this.areaInfo.id).then(response => {
+        this.pointList = response.data.reduce((total, currentValue) => {
+          if (currentValue.id === this.id) {
+            return [...total]
+          }
+          const point = JSON.parse(currentValue.pointJson)
+          return [...total, point]
+        }, [])
+        this.getArea()
+      })
+    },
+    getArea () {
+      const x = this.origin.X * this.$refs.iamge.width
+      if (this.pointList) {
+        this.pointList.forEach(item => {
+          this.ctx.strokeStyle = otherColor
+          this.ctx.beginPath()
+          this.ctx.moveTo(x, item[0].Y * this.$refs.iamge.height)
+          this.ctx.lineTo(x, item[1].Y * this.$refs.iamge.height)
+          this.ctx.stroke()
+        })
+      }
     },
     submit () {
       add({
-        id: this.id,
+        id: this.id || null,
         name: this.baseInfoVal.name,
         boundaryId: this.areaInfo.id,
         boundaryName: this.areaInfo.name,
@@ -210,12 +246,14 @@ export default {
         templateName: this.timeTempVal.templateName,
         level: this.baseInfoVal.level,
         oneLevelStatus: this.alarmSetVal.oneLevelStatus,
-        oneLevelJson: JSON.stringify(this.alarmSetVal.oneLevelJson),
+        oneLevelJson: JSON.stringify(this.booleanToNum(this.alarmSetVal.oneLevelJson)),
         twoLevelStatus: this.alarmSetVal.twoLevelStatus,
-        twoLevelJson: JSON.stringify(this.alarmSetVal.twoLevelJson),
+        twoLevelJson: JSON.stringify(this.booleanToNum(this.alarmSetVal.twoLevelJson)),
         pointJson: JSON.stringify(this.point),
         status: this.baseInfoVal.status,
-        description: this.baseInfoVal.description
+        description: this.baseInfoVal.description,
+        miniRange: this.alarmAreaVal.minDistance,
+        maxRange: this.alarmAreaVal.maxDistance
       }).then(response => {
         this.$message({
           message: response.msg,
@@ -223,6 +261,28 @@ export default {
         })
         this.$emit('submit')
       })
+    },
+    booleanToNum (obj) {
+      const Json = {}
+      for (const key in obj) {
+        if (obj[key]) {
+          Json[key] = 1
+        } else {
+          Json[key] = 0
+        }
+      }
+      return Json
+    },
+    NumToBoolean (obj) {
+      const Json = {}
+      for (const key in obj) {
+        if (obj[key]) {
+          Json[key] = true
+        } else {
+          Json[key] = false
+        }
+      }
+      return Json
     },
     cancel () {
       this.$emit('cancel')

@@ -1,0 +1,66 @@
+<template>
+<div class="app">
+  <video
+    :id="ids"
+    controls = "true"
+    muted
+    class="video-class">
+  </video>
+</div>
+</template>
+<script>
+import flvjs from 'flv.js'
+export default {
+  props: {
+    url: {
+      type: String,
+      default: ''
+    },
+    ids: {
+      type: String,
+      default: 'ids'
+    }
+  },
+  data () {
+    return {
+      flvPlayer: null
+    }
+  },
+  mounted () {
+    this.play()
+  },
+  methods: {
+    play () {
+      const url = this.url
+      if (flvjs.isSupported()) {
+        var videoElement = document.getElementById(this.ids)
+        this.flvPlayer = flvjs.createPlayer({
+          type: 'flv',
+          url: url
+        })
+        this.flvPlayer.attachMediaElement(videoElement)
+        this.flvPlayer.load()
+        this.flvPlayer.play()
+      }
+    }
+  },
+  beforeDestroy () {
+    this.flvPlayer.pause()
+    this.flvPlayer.unload()
+    this.flvPlayer.detachMediaElement()
+    this.flvPlayer.destroy()
+    this.flvPlayer = null
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.app{
+  height: 100%;
+  .video-class{
+    width: 100%;
+    height: 100%;
+    object-fit:fill;
+  }
+}
+</style>

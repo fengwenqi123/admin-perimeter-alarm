@@ -241,3 +241,10 @@
     }
   }
 }
+
+.menu-wrapper{
+  .is-active{
+    background-color: $menuHover !important;
+  }
+}
+

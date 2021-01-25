@@ -6,6 +6,19 @@
           <span>检测范围</span>
         </div>
         <div class="common">
+          <div class="label">所属分区：</div>
+          <div class="value">
+            <el-select v-model="area" clearable placeholder="请选择">
+              <el-option
+                v-for="item in areaOption"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+        <div class="common">
           <div class="label">宽度（米）：</div>
           <div class="value">0.2<span>-</span>3</div>
         </div>
@@ -102,6 +115,7 @@
 <script>
 import { timeList } from './index'
 import { add, lists } from '@/api/alarmParam'
+import { listsNoPage } from '@/api/partition'
 export default {
   name: 'index',
   data () {
@@ -110,13 +124,21 @@ export default {
       maxSmallTargetSizeHeight: null,
       timeList,
       startLightOn: null,
-      endLightOn: null
+      endLightOn: null,
+      area: null,
+      areaOption: null
     }
   },
   created () {
     this.getList()
+    this.getArea()
   },
   methods: {
+    getArea () {
+      listsNoPage().then(response => {
+        this.areaOption = response.data
+      })
+    },
     getList () {
       lists().then(response => {
         this.maxSmallTargetSizeWidth = response.data[0].maxSmallTargetSizeWidth
@@ -126,6 +148,10 @@ export default {
       })
     },
     submit () {
+      if (this.area === null) {
+        this.$message('请选择区域')
+        return
+      }
       if (this.maxSmallTargetSizeWidth === null) {
         this.$message('请输入宽度')
         return
@@ -143,6 +169,7 @@ export default {
         return
       }
       add({
+        boundaryId: this.area,
         maxSmallTargetSizeWidth: this.maxSmallTargetSizeWidth,
         maxSmallTargetSizeHeight: this.maxSmallTargetSizeHeight,
         startLightOn: this.startLightOn,

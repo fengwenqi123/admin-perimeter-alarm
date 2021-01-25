@@ -11,6 +11,15 @@ export function lists (pageNum, pageSize, order, sort, boundaryId, status, keywo
     }
   })
 }
+export function listsNoPage (boundaryId, status, keyword) {
+  return request({
+    url: '/boundary/area/list',
+    method: 'GET',
+    params: {
+      boundaryId, status, keyword
+    }
+  })
+}
 
 export function add (form) {
   const data = qs.stringify(form)

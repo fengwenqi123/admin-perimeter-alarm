@@ -238,6 +238,11 @@ export default {
       this.row_id = row.id
       this.addDialog = true
     },
+    handleClose () {
+      this.addDialog = false
+      this.row_id = null
+      this.readonly = false
+    },
     list () {
       lists(this.page.pageNum, this.page.pageSize, this.order, this.sort, this.area, this.state, this.keyword).then(response => {
         this.tableData = response.data.dataList
