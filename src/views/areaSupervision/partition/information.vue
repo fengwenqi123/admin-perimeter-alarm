@@ -91,7 +91,10 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null
+        StreamType: null,
+        LiveChannelStream: null,
+        LiveName: null,
+        AppName: null
       }],
       videoWhole: [{
         Title: null,
@@ -108,7 +111,10 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null
+        StreamType: null,
+        LiveChannelStream: null,
+        LiveName: null,
+        AppName: null
       }],
       show: false
     }

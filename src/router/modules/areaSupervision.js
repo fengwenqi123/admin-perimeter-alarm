@@ -6,7 +6,7 @@ const areaSupervision = {
   component: Layout,
   redirect: '/areaSupervision/partition',
   name: 'areaSupervision',
-  meta: { title: '防区监管', roles: ['sys'] },
+  meta: { title: '防区监管', roles: ['sys'], icon: 'sys' },
   children: [
     {
       path: 'partition',

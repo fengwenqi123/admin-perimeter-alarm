@@ -107,6 +107,7 @@
           </el-table-column>
           <el-table-column
             label="时间"
+            width="180"
             prop="startTimeStr">
           </el-table-column>
           <el-table-column
@@ -154,7 +155,7 @@
           <el-table-column
             label="操作"
             fixed="right"
-            width="220"
+            width="120"
           >
             <template slot-scope="scope">
               <el-button-group>
@@ -182,8 +183,8 @@
         </div>
       </div>
     </el-card>
-    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="6vh">
-      <information v-if="addDialog" :row="row" :readonly="readonly" @cancel="cancel" @submit="submit"/>
+    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="1vh" width="90%">
+      <information v-if="addDialog" :row="row" @cancel="cancel" @submit="submit"/>
     </el-dialog>
   </div>
 </template>

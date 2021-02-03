@@ -4,89 +4,89 @@
       <div slot="header" class="clearfix">
         <span>分区信息</span>
       </div>
-      <div class="common">
-        <div class="label">名称:</div>
-        <div class="value">
-          <el-input
-            placeholder="请输入内容"
-            v-model="val.name"
-            clearable>
-          </el-input>
+      <div class="main">
+      <div class="form">
+        <div class="common">
+          <div class="label">名称:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val.name"
+              clearable>
+            </el-input>
+          </div>
         </div>
-      </div>
-      <div class="common">
-        <div class="label">描述:</div>
-        <div class="value">
-          <el-input
-            placeholder="请输入内容"
-            v-model="val.description"
-            clearable>
-          </el-input>
+        <div class="common">
+          <div class="label">描述:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val.description"
+              clearable>
+            </el-input>
+          </div>
         </div>
-      </div>
-      <div class="common">
-        <div class="label">状态</div>
-        <div class="value">
-          <el-tooltip :content="'状态:' + getStatus(val.status)" placement="top">
-            <el-switch
-              v-model="val.status"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-value='1'
-              inactive-value='2'>
-            </el-switch>
-          </el-tooltip>
+        <div class="common">
+          <div class="label">状态</div>
+          <div class="value">
+            <el-tooltip :content="'状态:' + getStatus(val.status)" placement="top">
+              <el-switch
+                v-model="val.status"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-value='1'
+                inactive-value='2'>
+              </el-switch>
+            </el-tooltip>
+          </div>
+        </div>
+        <p>设置原（零）点[x,y]</p>
+        <div class="common">
+          <div class="label">激光坐标:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="laser1"
+              clearable>
+            </el-input>
+          </div>
+        </div>
+        <div class="common">
+          <div class="label">平面坐标:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="plane1"
+              clearable>
+            </el-input>
+            <i class="el-icon-aim" @click="editActive(1)"></i>
+          </div>
+        </div>
+
+        <p>设置校正点[x,y]</p>
+        <div class="common">
+          <div class="label">激光坐标:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="laser2"
+              clearable>
+            </el-input>
+          </div>
+        </div>
+        <div class="common">
+          <div class="label">平面坐标:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="plane2"
+              clearable>
+            </el-input>
+            <i class="el-icon-aim" @click="editActive(2)"></i>
+          </div>
         </div>
       </div>
       <div class="other">
-        <div class="main">
-          <p>设置原（零）点[x,y]</p>
-          <div class="common">
-            <div class="label">激光坐标:</div>
-            <div class="value">
-              <el-input
-                placeholder="请输入内容"
-                v-model="laser1"
-                clearable>
-              </el-input>
-            </div>
-          </div>
-          <div class="common">
-            <div class="label">平面坐标:</div>
-            <div class="value">
-              <el-input
-                placeholder="请输入内容"
-                v-model="plane1"
-                clearable>
-              </el-input>
-              <i class="el-icon-aim" @click="editActive(1)"></i>
-            </div>
-          </div>
-
-          <p>设置校正点[x,y]</p>
-          <div class="common">
-            <div class="label">激光坐标:</div>
-            <div class="value">
-              <el-input
-                placeholder="请输入内容"
-                v-model="laser2"
-                clearable>
-              </el-input>
-            </div>
-          </div>
-          <div class="common">
-            <div class="label">平面坐标:</div>
-            <div class="value">
-              <el-input
-                placeholder="请输入内容"
-                v-model="plane2"
-                clearable>
-              </el-input>
-              <i class="el-icon-aim" @click="editActive(2)"></i>
-            </div>
-          </div>
-        </div>
-
         <div class="common file pic">
           <input type="file" name="" id="" @change="chose">
           <canvas v-if="image" id="myCanvas"></canvas>
@@ -94,6 +94,7 @@
             <i class="el-icon-plus"></i>
           </div>
         </div>
+      </div>
       </div>
     </el-card>
   </div>
@@ -250,6 +251,10 @@ export default {
 <style scoped lang="scss">
 .container {
   .box-card {
+    .main{
+      display: flex;
+      align-items: flex-start;
+    }
     .common {
       display: flex;
       align-items: center;
@@ -265,6 +270,7 @@ export default {
     }
 
     .other {
+      margin-left: 50px;
       display: flex;
       align-items: flex-start;
 

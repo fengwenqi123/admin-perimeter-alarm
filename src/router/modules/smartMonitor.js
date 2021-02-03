@@ -6,7 +6,7 @@ const smartMonitor = {
   component: Layout,
   redirect: '/smart/smartMonitor',
   name: 'smart',
-  meta: { title: '智能监控', roles: ['sys'] },
+  meta: { title: '智能监控', roles: ['sys'], icon: 'sys' },
   children: [
     {
       path: 'smartMonitor',

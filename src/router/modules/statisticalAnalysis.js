@@ -6,7 +6,7 @@ const statisticalAnalysis = {
   component: Layout,
   redirect: '/statisticalAnalysis/category',
   name: 'statisticalAnalysis',
-  meta: { title: '统计分析', roles: ['sys'] },
+  meta: { title: '统计分析', roles: ['sys'], icon: 'sys' },
   children: [
     {
       path: 'category',

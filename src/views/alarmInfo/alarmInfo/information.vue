@@ -1,160 +1,207 @@
 <template>
-  <div class="information">
+  <div class="information" v-if="alarmDetails">
     <div class="information-main">
       <el-scrollbar class="scrolls">
         <div class="information-form">
-          <el-form ref="addForm" :model="form" status-icon :rules="rules" label-position="right" label-width="180px">
-            <el-form-item label="添加权限:">
-              <el-tree
-                ref="tree"
-                :data="data2"
-                :show-checkbox="flag"
-                node-key="id"
-                highlight-current
-                :props="defaultProps"
-              />
-            </el-form-item>
-            <el-form-item label="名称:" prop="name">
-              <el-input
-                v-model="form.name"
-                :readonly="readonly"
-                placeholder="请输入名称"
-                clearable
-              />
-            </el-form-item>
-            <el-form-item label="备注:" prop="description">
-              <el-input
-                v-model="form.description"
-                :readonly="readonly"
-                type="textarea"
-                :rows="6"
-                placeholder="请输入备注"
-              />
-            </el-form-item>
-            <el-form-item label="状态:" prop="status">
-              <el-radio v-model="form.status" :readonly="readonly" label="1">启用</el-radio>
-              <el-radio v-model="form.status" :readonly="readonly" label="2">禁用</el-radio>
-            </el-form-item>
-          </el-form>
+          <div class="line">
+            <div class="video">
+              <el-card class="box-card">
+                <flv :val="trackVideo"></flv>
+              </el-card>
+            </div>
+            <div class="video">
+              <el-card class="box-card">
+                <flv :val="panoramaVideo"></flv>
+              </el-card>
+            </div>
+          </div>
+          <div class="line1">
+            <div class="button">
+              <div class="btn b0" :class="{'stop':playStatus==='播放'}" @click="play">{{playStatus}}</div>
+              <div class="btn b1">视频下载</div>
+              <div class="btn b2">
+                <span>播放速度</span>
+                <el-dropdown @command="handleCommand" trigger="click" placement="top-end">
+                  <span class="el-dropdown-link">
+                    x{{ inx }}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="8">8</el-dropdown-item>
+                    <el-dropdown-item command="4">4</el-dropdown-item>
+                    <el-dropdown-item command="2">2</el-dropdown-item>
+                    <el-dropdown-item command="1">1</el-dropdown-item>
+                    <el-dropdown-item command="0.5">0.5</el-dropdown-item>
+                    <el-dropdown-item command="0.25">0.25</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div class="btn b3" @click="screenshot">截图</div>
+            </div>
+            <div class="alarm">
+              <el-card class="box-card" :body-style="{ padding: '0px' }">
+                <div slot="header" class="clearfix">
+                  <span>告警信息</span>
+                </div>
+                <div class="main">
+                  <div class="img">
+                    <img :src="alarmUrl" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="con">
+                      <div class="label">开始时间</div>
+                      <div class="val">{{ alarmDetails.startTimeStr }}</div>
+                    </div>
+                    <div class="con">
+                      <div class="label">结束时间</div>
+                      <div class="val">{{ alarmDetails.stopTimeStr }}</div>
+                    </div>
+                    <div class="con">
+                      <div class="label">类别</div>
+                      <div class="val">{{ alarmDetails.alarmType === 1 ? '一级告警' : '二级告警' }}</div>
+                    </div>
+                    <div class="con">
+                      <div class="label">防区</div>
+                      <div class="val">{{ alarmDetails.areaName }}</div>
+                    </div>
+                    <div class="con">
+                      <div class="label">分区</div>
+                      <div class="val">{{ alarmDetails.boundaryName }}</div>
+                    </div>
+                  </div>
+                </div>
+              </el-card>
+            </div>
+            <div class="handle">
+              <el-card class="box-card" :body-style="{ padding: '10px' }">
+                <div slot="header" class="clearfix">
+                  <span>处理信息</span>
+                </div>
+                <div class="form">
+                  <div class="con">
+                    <div class="label">状态</div>
+                    <div class="val">{{ alarmDetails.status === 1 ? '未处理' : '已处理' }}</div>
+                  </div>
+                  <div class="con">
+                    <div class="label">处理人</div>
+                    <div class="val">{{ alarmDetails.userName }}</div>
+                  </div>
+                  <div class="con">
+                    <div class="label">处理意见</div>
+                    <div class="val">
+                      <el-input
+                        type="textarea"
+                        :rows="6"
+                        placeholder="请输入内容"
+                        v-model="alarmDetails.description">
+                      </el-input>
+                    </div>
+                  </div>
+                  <div class="con submit">
+                    <el-button type="primary" @click="submit">立即处理</el-button>
+                    <el-button>取 消</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </div>
+          </div>
         </div>
       </el-scrollbar>
     </div>
-    <div slot="footer" class="information-foot"  v-if="!readonly">
-      <el-button
-        icon="el-icon-document"
-        size="small"
-        class="blueButton"
-        @click="submitForm('addForm')"
-      >
-        保存
-      </el-button>
-      <el-button
-        icon="el-icon-refresh-left"
-        size="small"
-        class="whiteButton"
-        @click="cancel"
-      >
-        返回
-      </el-button>
-    </div>
+    <canvas id="canvas"></canvas>
   </div>
 </template>
 
 <script>
-import { listToTree } from '@/utils/index.js'
-import { findRole, add, findRoleById } from '@/api/RoleManagement'
+import { details, handle } from '@/api/alarmInfo'
+import flv from '@/components/flv'
+import download from 'downloadjs'
 
 export default {
   props: {
     row: {
-      type: Object,
-      default () {
-        return {}
+      type: Object
+    }
+  },
+  components: {
+    flv
+  },
+  computed: {
+    alarmUrl () {
+      if (this.alarmDetails) {
+        return `${this.alarmDetails.alarmUrl}${this.alarmDetails.image}`
+      } else {
+        return null
       }
-    },
-    readonly: {
-      type: Boolean
     }
   },
   data () {
     return {
-      flag: true,
-      data2: [],
-      disabled: false,
-      authArr: [],
-      sourceData: null,
-      defaultProps: {
-        children: 'children',
-        label: 'name'
+      trackVideo: {
+        url: 'http://192.168.1.201:9001/flv/zhoujie/47',
+        id: 'trackVideo'
       },
-      Jurisdiction: [],
-      // 表单内容
-      form: {
-        id: null,
-        name: null,
-        description: null,
-        status: '1',
-        authorizeIds: null
+      panoramaVideo: {
+        url: 'http://192.168.1.201:9001/flv/zhoujie/47',
+        id: 'panoramaVideo'
       },
-      // 表单验证
-      rules: {
-        name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }]
-      }
+      alarmDetails: null,
+      inx: 1,
+      playStatus: '暂停'
     }
   },
   created () {
     this.init()
-    this.getAll()
   },
   methods: {
     init () {
       if (this.row) {
-        this.form = JSON.parse(JSON.stringify(this.row))
-        this.form.status = this.form.status.toString()
+        const id = this.row.id
+        this.getdetails(id)
       }
     },
-    // 数据操作
-    getAll () { // 查看所有权限
-      findRole().then(response => {
-        var list = response.data
-        list.forEach((item, index) => {
-          item.disabled = this.disabled
-        })
-        this.data2 = listToTree('id', 'layer', list)
-        if (this.form.id) {
-          this.findRoleByIds()
-        }
-      })
-    },
-    findRoleByIds () { // 根据角色id获取权限
-      findRoleById(this.form.id).then(response => {
-        this.Jurisdiction = response.data
-        this.$refs.tree.setCheckedNodes(this.Jurisdiction)
-      })
-    },
-    // 表单操作
-    submitForm (formName) {
-      this.form.authorizeIds = this.$refs.tree.getCheckedKeys().join(',')
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          add(this.form).then(response => {
-            this.$message({
-              message: response.msg,
-              type: 'success'
-            })
-            this.submit()
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
+    getdetails (id) {
+      details(id).then(response => {
+        this.alarmDetails = response.data
       })
     },
     submit () {
-      this.$emit('submit')
+      handle(this.alarmDetails.id, this.alarmDetails.description).then(response => {
+        this.$message({
+          message: response.msg,
+          type: 'success'
+        })
+      })
     },
-    cancel () {
-      this.$emit('cancel')
+    play () {
+      const arr = [document.getElementById(this.trackVideo.id), document.getElementById(this.panoramaVideo.id)]
+      arr.forEach(item => {
+        if (item.paused) {
+          item.play()
+          this.playStatus = '暂停'
+        } else {
+          item.pause()
+          this.playStatus = '播放'
+        }
+      })
+    },
+    handleCommand (command) {
+      this.inx = parseFloat(command)
+      document.getElementById(this.trackVideo.id).playbackRate = this.inx
+      document.getElementById(this.panoramaVideo.id).playbackRate = this.inx
+    },
+    screenshot () {
+      const v1 = document.getElementById(this.trackVideo.id)
+      const v2 = document.getElementById(this.panoramaVideo.id)
+      const arr = [v1, v2]
+      const canvas = document.getElementById('canvas')
+      arr.forEach((item, index) => {
+        canvas.width = item.offsetWidth
+        canvas.height = item.offsetHeight
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(item, 0, 0, item.offsetWidth, item.offsetHeight)
+        const base64 = canvas.toDataURL('images/png')
+        download(base64, `${index}.png`, 'image/png')
+      })
     }
   }
 
@@ -162,5 +209,140 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.information {
+  .information-main {
+    height: 800px;
+  }
 
+  .line {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .video {
+      width: 800px;
+      height: 400px;
+
+      .box-card {
+        height: 100%;
+      }
+    }
+
+    .video:nth-child(2) {
+      margin-left: 20px;
+    }
+  }
+
+  .line1 {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+
+    .button {
+      .btn {
+        width: 320px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        font-size: 26px;
+        margin-bottom: 20px;
+        cursor: pointer;
+      }
+      .b0 {
+        border:2px solid #1890ff;
+        color: #1890ff;
+      }
+      .stop{
+        border:2px solid red;
+        color: red;
+      }
+
+      .b1 {
+        background: #13ce66;
+        color: #fff;
+      }
+
+      .b2 {
+        background: #1890ff;
+        color: #fff;
+        span{
+          font-size: 26px;
+          color: #fff;
+        }
+        .el-dropdown-link{
+          margin-left: 20px;
+          cursor: pointer;
+        }
+      }
+
+      .b3 {
+        border: 1px solid #1890ff;
+        color: #1890ff;
+      }
+    }
+
+    .alarm {
+      .box-card {
+        .main {
+          display: flex;
+          align-items: flex-start;
+
+          .img {
+            img {
+              width: 350px;
+              height: 220px;
+            }
+          }
+
+          .info {
+            margin: 0 20px;
+
+            .con {
+              display: flex;
+              align-items: flex-start;
+              justify-content: space-between;
+              margin-top: 20px;
+
+              .val {
+                font-size: 16px;
+                margin-left: 20px;
+              }
+
+              .label {
+                font-size: 16px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .handle {
+      .form {
+        .con {
+          margin-bottom: 10px;
+          display: flex;
+
+          .label {
+            width: 100px;
+            text-align: right;
+          }
+
+          .val {
+            margin-left: 20px;
+          }
+        }
+
+        .submit {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+#canvas{
+  //position: absolute;
+  display: none;
+}
 </style>

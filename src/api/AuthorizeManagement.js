@@ -3,7 +3,7 @@ import qs from 'qs'
 
 export function lists (pageNum, pageSize, order, sort, status, keyword) {
   return request({
-    url: '/account/authorize',
+    url: '/simple/authorize',
     method: 'GET',
     params: {
       pageNum,
@@ -19,7 +19,7 @@ export function lists (pageNum, pageSize, order, sort, status, keyword) {
 export function add (form) {
   const data = qs.stringify(form)
   return request({
-    url: '/account/authorize',
+    url: '/simple/authorize',
     method: 'POST',
     data
   })
@@ -29,26 +29,38 @@ export function delt (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/authorize/remove', data)
+  return request({
+    url: '/simple/authorize/remove',
+    method: 'PUT',
+    data
+  })
 }
 
 export function enable (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/authorize/enable', data)
+  return request({
+    url: '/simple/authorize/enable',
+    method: 'PUT',
+    data
+  })
 }
 
 export function disable (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/authorize/disable', data)
+  return request({
+    url: '/simple/authorize/disable',
+    method: 'PUT',
+    data
+  })
 }
 
 export function findAuthorize () {
   return request({
-    url: '/account/authorize',
+    url: '/simple/authorize',
     method: 'GET',
     params: {
       pageNum: 1,

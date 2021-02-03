@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/cache'
 import { showFullScreenLoading, tryHideFullScreenLoading } from './load.js'
-const timeout = 10000
+const timeout = 20000
 // 创建axios实例
 const service = axios.create({
   baseURL: 'http://192.168.1.120:11002/', // api的base_url

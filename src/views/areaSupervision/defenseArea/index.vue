@@ -7,7 +7,7 @@
         <div class="search">
           <el-form :inline="true" class="form-inline" label-width="120px">
             <el-form-item label="所属分区">
-              <el-select v-model="area" clearable placeholder="请选择">
+              <el-select v-model="area" placeholder="请选择">
                 <el-option
                   v-for="item in areaOption"
                   :key="item.id"

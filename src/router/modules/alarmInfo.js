@@ -7,7 +7,7 @@ const alarmInfo = {
   redirect: '/alarmInfo/alarm',
   name: 'alarmInfo',
   // alwaysShow: true,
-  meta: { title: '告警信息', roles: ['sys'] },
+  meta: { title: '告警信息', roles: ['sys'], icon: 'sys' },
   children: [
     {
       path: 'alarm',

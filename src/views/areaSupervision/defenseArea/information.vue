@@ -68,6 +68,7 @@ import alarmSetting from './information/alarmSetting'
 import timeTemp from './information/timeTemp'
 import alarmArea from './information/alarmArea'
 import { add, getDataById, listsNoPage } from '@/api/defenseArea'
+import { getDataById as getDataByIdPar } from '@/api/partition'
 const currentColor = 'yellow'
 const otherColor = '#828282'
 const ctxLineWidth = 4
@@ -94,7 +95,7 @@ export default {
   watch: {
     alarmAreaVal: {
       handler (newVal) {
-        if (newVal.minDistance && newVal.maxDistance) {
+        if ((newVal.minDistance || newVal.minDistance === 0) && (newVal.maxDistance || newVal.maxDistance === 0)) {
           this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
           this.getArea()
           const x = this.origin.X * this.$refs.iamge.width
@@ -155,22 +156,25 @@ export default {
   methods: {
     init () {
       if (this.areaInfo) {
-        this.imageSrc = this.areaInfo.image
-        // 数组奇数位的xy对应偶数位的yx
-        this.pointJson = JSON.parse(this.areaInfo.pointJson)
-        this.calculation()
-        this.getListFun()
-        // 图片加载完成初始化canvas
-        const newImg = new Image()
-        newImg.src = this.areaInfo.image
-        newImg.onload = () => {
-          this.canvasInit()
-        }
-      }
-      if (this.id) {
-        setTimeout(() => {
-          this.getDataByIdFun()
-        }, 500)
+        getDataByIdPar(this.areaInfo.id).then(response => {
+          this.imageSrc = response.data.image
+          // 数组奇数位的xy对应偶数位的yx
+          this.pointJson = JSON.parse(response.data.pointJson)
+          this.calculation()
+          this.getListFun()
+          // 图片加载完成初始化canvas
+          const newImg = new Image()
+          newImg.src = response.data.image
+          newImg.onload = () => {
+            this.canvasInit()
+            // 获取防区详情
+            if (this.id) {
+              setTimeout(() => {
+                this.getDataByIdFun()
+              }, 500)
+            }
+          }
+        })
       }
     },
     // 根据id查详情
@@ -237,6 +241,9 @@ export default {
       }
     },
     submit () {
+      if ((!this.alarmAreaVal.minDistance && this.alarmAreaVal.minDistance !== 0) || (!this.alarmAreaVal.maxDistance && this.alarmAreaVal.maxDistance !== 0)) {
+        this.$message('请先填写告警区域')
+      }
       add({
         id: this.id || null,
         name: this.baseInfoVal.name,

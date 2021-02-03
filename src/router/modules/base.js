@@ -1,6 +1,6 @@
 const base = [{
   path: '/',
-  redirect: '/system'
+  redirect: '/smart'
 }, {
   path: '/home',
   component: () => import('@/views/home')

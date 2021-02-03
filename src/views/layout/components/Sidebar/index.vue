@@ -48,29 +48,29 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .scrollbar-wrapper{
-    height: calc(100% - 78px);
-  }
-  .hamburger-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    background: #f5f5f5;
-    width: 180px;
-  }
+.scrollbar-wrapper{
+  height: calc(100% - 78px);
+}
+.hamburger-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  background: #f5f5f5;
+  width: 180px;
+}
 
-  .logo {
-    width: 180px;
-    height: 68px;
-    background: rgba(24, 144, 255, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.logo {
+  width: 180px;
+  height: 68px;
+  background: rgba(24, 144, 255, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    img {
-      width: 56px;
-      height: 56px;
-    }
+  img {
+    width: 56px;
+    height: 56px;
   }
+}
 </style>

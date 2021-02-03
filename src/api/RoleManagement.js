@@ -3,7 +3,7 @@ import qs from 'qs'
 
 export function lists (pageNum, pageSize, order, sort, status, keyword) {
   return request({
-    url: '/account/role',
+    url: '/simple/role',
     method: 'GET',
     params: {
       pageNum,
@@ -19,7 +19,7 @@ export function lists (pageNum, pageSize, order, sort, status, keyword) {
 export function add (form) {
   const data = qs.stringify(form)
   return request({
-    url: '/account/role',
+    url: '/simple/role',
     method: 'POST',
     data
   })
@@ -29,21 +29,33 @@ export function delt (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/role/remove', data)
+  return request({
+    url: '/simple/role/remove',
+    method: 'PUT',
+    data
+  })
 }
 
 export function enable (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/role/enable', data)
+  return request({
+    url: '/simple/role/enable',
+    method: 'PUT',
+    data
+  })
 }
 
 export function disable (id) {
   const data = qs.stringify({
     id: id.join(',')
   })
-  return request.put('/account/role/disable', data)
+  return request({
+    url: '/simple/role/disable',
+    method: 'PUT',
+    data
+  })
 }
 
 export function findRole () {

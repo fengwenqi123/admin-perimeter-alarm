@@ -27,6 +27,10 @@ module.exports = {
     }
   },
   chainWebpack (config) {
+    config.plugin('html').tap(args => {
+      args[0].title = '三维激光哨兵'
+      return args
+    })
     // 修复HMR
     config.resolve.symlinks(true)
     config.optimization.minimizer('terser').tap((args) => {

@@ -1,7 +1,7 @@
 <template>
 <div class="app">
   <video
-    :id="ids"
+    :id="val.id"
     controls = "true"
     muted
     class="video-class">
@@ -12,13 +12,8 @@
 import flvjs from 'flv.js'
 export default {
   props: {
-    url: {
-      type: String,
-      default: ''
-    },
-    ids: {
-      type: String,
-      default: 'ids'
+    val: {
+      type: Object
     }
   },
   data () {
@@ -31,9 +26,9 @@ export default {
   },
   methods: {
     play () {
-      const url = this.url
+      const url = this.val.url
       if (flvjs.isSupported()) {
-        var videoElement = document.getElementById(this.ids)
+        var videoElement = document.getElementById(this.val.id)
         this.flvPlayer = flvjs.createPlayer({
           type: 'flv',
           url: url

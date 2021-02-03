@@ -7,7 +7,7 @@ const system = {
   redirect: '/system/AuthorizeManagement',
   name: 'system',
   alwaysShow: true,
-  meta: { title: '系统管理', roles: ['sys'] },
+  meta: { title: '系统管理', roles: ['sys'], icon: 'sys' },
   children: [
     {
       path: 'AuthorizeManagement',
