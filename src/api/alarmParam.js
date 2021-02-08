@@ -20,3 +20,13 @@ export function lists (keyword) {
     }
   })
 }
+
+export function listsById (boundaryId) {
+  return request({
+    url: '/boundary/alarmConfig/findByBoundaryId',
+    method: 'GET',
+    params: {
+      boundaryId
+    }
+  })
+}

@@ -40,6 +40,18 @@
             </el-tooltip>
           </div>
         </div>
+        <div class="common">
+          <el-upload
+            class="upload-demo"
+            action=""
+            :auto-upload=false
+            :show-file-list=false
+            :on-change="handlePreview"
+            :on-remove="handleRemove"
+            :file-list="fileList">
+            <el-button size="small" type="primary">点击上传分区图</el-button>
+          </el-upload>
+        </div>
         <p>设置原（零）点[x,y]</p>
         <div class="common">
           <div class="label">激光坐标:</div>
@@ -88,11 +100,20 @@
       </div>
       <div class="other">
         <div class="common file pic">
-          <input type="file" name="" id="" @change="chose">
+<!--          <input type="file" name="" id="" @change="chose">-->
+
+<!--          <el-upload-->
+<!--            action=""-->
+<!--            :auto-upload=false-->
+<!--            list-type="picture-card"-->
+<!--            :on-change="handlePreview"-->
+<!--            :on-remove="handleRemove">-->
+<!--            <i class="el-icon-plus"></i>-->
+<!--          </el-upload>-->
           <canvas v-if="image" id="myCanvas"></canvas>
-          <div v-else class="up-load">
-            <i class="el-icon-plus"></i>
-          </div>
+<!--          <div v-else class="up-load">-->
+<!--            <i class="el-icon-plus"></i>-->
+<!--          </div>-->
         </div>
       </div>
       </div>
@@ -154,19 +175,27 @@ export default {
       plane1: null,
       plane2: null,
       active: null,
-      image: null
+      image: null,
+      fileList: []
     }
   },
   created () {
     this.init()
   },
   methods: {
+    handleRemove () {
+      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
+    },
+    handlePreview (file) {
+      console.log(file)
+      this.chose(file.raw)
+    },
     init () {
       if (this.val.image) {
         this.image = new Image()
         this.image.src = this.val.image
         this.image.onload = () => {
-          this.getBase64Img()
+          this.canvasDrawImg()
           if (this.val.point) {
             this.laser1 = `${this.val.point[0].X},${this.val.point[0].Y}`
             this.plane1 = `${this.val.point[1].X},${this.val.point[1].Y}`
@@ -204,20 +233,20 @@ export default {
       var dataURL = this.canvas.toDataURL('image/' + ext)
       return dataURL
     },
-    chose (e) {
-      if (e.target.files[0]) {
+    chose (raw) {
+      if (raw) {
         this.image = new Image()
         this.plane1 = null
         this.plane2 = null
-        this.image.src = window.URL.createObjectURL(e.target.files[0])
+        this.image.src = window.URL.createObjectURL(raw)
         this.image.onload = () => {
-          this.getBase64Img()
+          this.canvasDrawImg()
           this.val.image = this.baseImg()
         }
       }
     },
     // 初始化背景图
-    getBase64Img () {
+    canvasDrawImg () {
       this.canvas = document.getElementById('myCanvas')
       this.canvas.width = this.image.width
       this.canvas.height = this.image.height
@@ -259,9 +288,18 @@ export default {
       display: flex;
       align-items: center;
       margin-bottom: 20px;
+      .label{
+        width: 90px;
+        text-align: right;
+      }
 
       .value {
         margin-left: 20px;
+        display: flex;
+        align-items: center;
+        .el-icon-aim{
+          margin-left: 6px;
+        }
       }
     }
 
@@ -340,5 +378,9 @@ export default {
     color: #004974;
     text-decoration: none;
   }
+}
+.upload-demo{
+  display: flex;
+  align-items: center;
 }
 </style>

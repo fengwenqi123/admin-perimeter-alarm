@@ -78,7 +78,6 @@
                 label="宽">
               </el-table-column>
               <el-table-column
-                prop="date"
                 label="状态">
                 <template slot-scope="scope">
                   {{scope.row.status===1?'未处理':'已处理'}}
@@ -285,7 +284,7 @@ export default {
           dist: data[2],
           h: data[3],
           w: data[4],
-          date: data[5]
+          status: parseFloat(data[5])
         }
         this.tableData.unshift(obj)
       }

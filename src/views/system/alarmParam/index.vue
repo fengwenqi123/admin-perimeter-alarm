@@ -8,7 +8,7 @@
         <div class="common">
           <div class="label">所属分区：</div>
           <div class="value">
-            <el-select v-model="area" clearable placeholder="请选择">
+            <el-select v-model="area" placeholder="请选择">
               <el-option
                 v-for="item in areaOption"
                 :key="item.id"
@@ -114,7 +114,7 @@
 
 <script>
 import { timeList } from './index'
-import { add, lists } from '@/api/alarmParam'
+import { add, listsById } from '@/api/alarmParam'
 import { listsNoPage } from '@/api/partition'
 export default {
   name: 'index',
@@ -126,25 +126,32 @@ export default {
       startLightOn: null,
       endLightOn: null,
       area: null,
-      areaOption: null
+      areaOption: null,
+      id: null
+    }
+  },
+  watch: {
+    area () {
+      this.getList(this.area)
     }
   },
   created () {
-    this.getList()
     this.getArea()
   },
   methods: {
     getArea () {
       listsNoPage().then(response => {
         this.areaOption = response.data
+        this.area = this.areaOption[0].id
       })
     },
-    getList () {
-      lists().then(response => {
-        this.maxSmallTargetSizeWidth = response.data[0].maxSmallTargetSizeWidth
-        this.maxSmallTargetSizeHeight = response.data[0].maxSmallTargetSizeHeight
-        this.startLightOn = response.data[0].startLightOn
-        this.endLightOn = response.data[0].endLightOn
+    getList (id) {
+      listsById(id).then(response => {
+        this.id = response.data.id
+        this.maxSmallTargetSizeWidth = response.data.maxSmallTargetSizeWidth
+        this.maxSmallTargetSizeHeight = response.data.maxSmallTargetSizeHeight
+        this.startLightOn = response.data.startLightOn
+        this.endLightOn = response.data.endLightOn
       })
     },
     submit () {
@@ -169,6 +176,7 @@ export default {
         return
       }
       add({
+        id: this.id,
         boundaryId: this.area,
         maxSmallTargetSizeWidth: this.maxSmallTargetSizeWidth,
         maxSmallTargetSizeHeight: this.maxSmallTargetSizeHeight,
