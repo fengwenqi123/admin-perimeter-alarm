@@ -137,11 +137,11 @@ export default {
   data () {
     return {
       trackVideo: {
-        url: 'http://192.168.1.201:9001/flv/zhoujie/47',
+        url: '',
         id: 'trackVideo1'
       },
       panoramaVideo: {
-        url: 'http://192.168.1.201:9001/flv/zhoujie/47',
+        url: '',
         id: 'panoramaVideo1'
       },
       alarmDetails: null,
@@ -161,8 +161,13 @@ export default {
     },
     getdetails (code) {
       detailsByCode(code).then(response => {
+        this.trackVideo.url = response.data.videoWholePlayback
+        this.panoramaVideo.url = response.data.videoPartPlayback
         this.alarmDetails = response.data
       })
+    },
+    cancel () {
+      this.$emit('cancel')
     },
     submit () {
       handle(this.alarmDetails.id, this.alarmDetails.description).then(response => {

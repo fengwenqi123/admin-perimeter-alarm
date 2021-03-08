@@ -213,6 +213,7 @@
         :title="title"
         :visible.sync="addDialog"
         top="6vh"
+        width="1800px"
       >
         <information
           v-if="addDialog"

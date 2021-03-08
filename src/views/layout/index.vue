@@ -3,20 +3,31 @@
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <navbar></navbar>
-      <app-main></app-main>
+      <div class="main">
+        <div class="jc">
+          <home></home>
+        </div>
+        <app-main></app-main>
+        <div class="video">
+          <videoList></videoList>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { Navbar, AppMain, Sidebar } from './components'
-
+import videoList from '@/views/videoList'
+import home from '@/views/home'
 export default {
   name: 'layout',
   components: {
     Navbar,
     AppMain,
-    Sidebar
+    Sidebar,
+    videoList,
+    home
   },
   computed: {
     sidebar () {
@@ -55,6 +66,20 @@ export default {
     }
     .main-container{
       flex: 1;
+    }
+    .main{
+      height: calc(100% - 68px);
+      display: flex;
+      .jc{
+        //text-align: center;
+        background: #ECF0F5;
+        padding: 20px 150px;
+        height: 100%;
+      }
+      .video{
+        background: #ECF0F5;
+        width: 1920px;
+      }
     }
   }
 </style>

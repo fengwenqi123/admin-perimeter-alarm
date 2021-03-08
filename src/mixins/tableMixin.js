@@ -65,16 +65,16 @@ export default {
     },
     cancel () {
       this.handleClose()
-      // this.list()
     },
     submit () {
       this.handleClose()
       this.list()
     },
     handleClose () {
-      this.addDialog = false
       this.row = null
       this.readonly = false
+      this.$store.commit('clearCancelToken')
+      this.addDialog = false
     },
     // 删除
     del () {

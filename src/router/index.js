@@ -17,6 +17,7 @@ Router.prototype.push = function push (location) {
 
 export const constantRouterMap = [
   ...base
+
 ]
 
 export const asyncRouterMap = [

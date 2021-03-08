@@ -128,9 +128,11 @@ export default {
       },
       alarmSetVal: {
         oneLevelStatus: '1',
-        oneLevelJson: { VoiceStatus: null, LightStatus: null, CenterStatus: null },
+        oneLevelJson: { VoiceStatus: null, LightStatus: null, CenterStatus: null, HighVoice: null },
         twoLevelStatus: '1',
-        twoLevelJson: { VoiceStatus: null, LightStatus: null, CenterStatus: null }
+        twoLevelJson: { VoiceStatus: null, LightStatus: null, CenterStatus: null, HighVoice: null },
+        threeLevelStatus: '1',
+        threeLevelJson: { VoiceStatus: null, LightStatus: null, CenterStatus: null, HighVoice: null }
       },
       timeTempVal: {
         templateName: null,
@@ -190,6 +192,8 @@ export default {
         this.alarmSetVal.oneLevelJson = this.NumToBoolean(JSON.parse(response.data.oneLevelJson))
         this.alarmSetVal.twoLevelStatus = response.data.twoLevelStatus.toString()
         this.alarmSetVal.twoLevelJson = this.NumToBoolean(JSON.parse(response.data.twoLevelJson))
+        this.alarmSetVal.threeLevelStatus = response.data.threeLevelStatus.toString()
+        this.alarmSetVal.threeLevelJson = this.NumToBoolean(JSON.parse(response.data.threeLevelJson))
         this.point = JSON.parse(response.data.pointJson)
         this.baseInfoVal.status = response.data.status.toString()
         this.baseInfoVal.description = response.data.description
@@ -256,6 +260,8 @@ export default {
         oneLevelJson: JSON.stringify(this.booleanToNum(this.alarmSetVal.oneLevelJson)),
         twoLevelStatus: this.alarmSetVal.twoLevelStatus,
         twoLevelJson: JSON.stringify(this.booleanToNum(this.alarmSetVal.twoLevelJson)),
+        threeLevelStatus: this.alarmSetVal.threeLevelStatus,
+        threeLevelJson: JSON.stringify(this.booleanToNum(this.alarmSetVal.threeLevelJson)),
         pointJson: JSON.stringify(this.point),
         status: this.baseInfoVal.status,
         description: this.baseInfoVal.description,

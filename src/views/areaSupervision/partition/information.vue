@@ -83,7 +83,10 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null
+        StreamType: null,
+        LiveChannelStream: null,
+        LiveName: null,
+        AppName: null
       }, {
         Title: null,
         IP: null,
@@ -91,10 +94,7 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null,
-        LiveChannelStream: null,
-        LiveName: null,
-        AppName: null
+        StreamType: null
       }],
       videoWhole: [{
         Title: null,
@@ -103,7 +103,11 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null
+        StreamType: null,
+        LiveChannelStream: null,
+        LiveName: null,
+        AppName: null,
+        liveCaptureUrl: null
       }, {
         Title: null,
         IP: null,
@@ -111,10 +115,7 @@ export default {
         UserName: null,
         Password: null,
         Channel: null,
-        StreamType: null,
-        LiveChannelStream: null,
-        LiveName: null,
-        AppName: null
+        StreamType: null
       }],
       show: false
     }

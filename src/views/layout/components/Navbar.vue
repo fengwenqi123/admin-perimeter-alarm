@@ -1,19 +1,38 @@
 <template>
   <div class="navbar">
-         <div class="title">
-<!--           <img :src="logo" alt="">-->
-           <p>三维激光哨兵</p>
-         </div>
+    <div class="title">
+      <p>三维激光哨兵</p>
+    </div>
+    <!--    <div class="tabs">-->
+    <!--&lt;!&ndash;      <div class="sidebar">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <SubMenuTop />&ndash;&gt;-->
+    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
+    <!--      <el-popover placement="bottom" width="150" trigger="click">-->
+    <!--        <ul class="ul1">-->
+    <!--          <li>-->
+    <!--            <div class="item"-->
+    <!--                 @click="logout">-->
+    <!--              <i class="el-icon-third-tuichudenglu"></i>-->
+    <!--              退出登录-->
+    <!--            </div>-->
+    <!--          </li>-->
+    <!--        </ul>-->
+    <!--        <div slot="reference"-->
+    <!--             class="avatar-wrapper">-->
+    <!--          <svg-icon icon-class="avatar" class="user-avatar"></svg-icon>-->
+    <!--          <div class="name">{{userInfo.name}}</div>-->
+    <!--        </div>-->
+    <!--      </el-popover>-->
+    <!--    </div>-->
+
     <div class="tabs">
-<!--      <div class="sidebar">-->
-<!--        <SubMenuTop />-->
-<!--      </div>-->
       <el-popover placement="bottom" width="150" trigger="click">
-        <ul class="ul1">
+        <ul class="ul">
           <li>
             <div class="item"
+                 style="cursor: pointer"
                  @click="logout">
-              <i class="el-icon-third-tuichudenglu"></i>
+              <i class="el-icon-switch-button"></i>
               退出登录
             </div>
           </li>
@@ -21,7 +40,7 @@
         <div slot="reference"
              class="avatar-wrapper">
           <svg-icon icon-class="avatar" class="user-avatar"></svg-icon>
-          <div class="name">{{userInfo.name}}</div>
+          <div class="name">{{ userInfo.name }}</div>
         </div>
       </el-popover>
     </div>
@@ -72,67 +91,86 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .navbar {
-    padding-right: 20px;
-    height: 68px;
-    border-radius: 0px !important;
-    background: rgba(24, 144, 255, 1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.navbar {
+  padding-right: 20px;
+  height: 68px;
+  border-radius: 0px !important;
+  background: rgba(24, 144, 255, 1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    .title {
-      margin: 0 20px;
-    p{
+  .title {
+    margin: 0 20px;
+
+    p {
       margin-left: 10px;
-      font-family:AdobeHeiti;
+      font-family: AdobeHeiti;
       font-size: 30px;
       color: #fff;
     }
-      display: flex;
-      align-items: center;
-    }
 
-    .tabs {
+    display: flex;
+    align-items: center;
+  }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+
+    span {
+      color: #ffff;
       display: flex;
-      align-items: center;
-      span {
-        color: #ffff;
-        display: flex;
-        margin-left: 12px;
+      margin-left: 12px;
+      cursor: pointer;
+
+      a {
+        display: inline-block;
+        /* padding: 20px 20px; */
+        height: 32px;
+        background: #fff;
+        line-height: 32px;
+        width: 100px;
+        border-radius: 15px;
+        color: #1890ff;
+        text-align: center;
+      }
+
+      .avatar-wrapper {
+        width: auto;
+        padding: 10px;
+        border-radius: 20px;
+        height: 32px;
         cursor: pointer;
+        margin-right: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #fff;
 
-        a {
-          display: inline-block;
-          /* padding: 20px 20px; */
-          height: 32px;
-          background: #fff;
-          line-height: 32px;
-          width: 100px;
-          border-radius: 15px;
+        .name {
           color: #1890ff;
-          text-align: center;
+          padding: 0 8px;
         }
-        .avatar-wrapper{
-          width: auto;
-          padding: 10px;
-          border-radius: 20px;
-          height: 32px;
-          cursor: pointer;
-          margin-right: 2px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: #fff;
-          .name{
-            color: #1890ff;
-            padding: 0 8px;
-          }
-          .user-avatar{
-            font-size: 20px;
-          }
+
+        .user-avatar {
+          font-size: 20px;
         }
       }
     }
   }
+}
+.ul {
+  margin: 0px;
+  padding: 0px;
+  .item{
+    padding: 5px 0;
+    i{
+      margin-right: 10px;
+    }
+  }
+  .item:hover{
+    background: #f8f8f8;
+  }
+}
 </style>

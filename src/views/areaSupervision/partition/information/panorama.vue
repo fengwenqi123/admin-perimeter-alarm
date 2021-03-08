@@ -78,6 +78,46 @@
             </el-select>
           </div>
         </div>
+        <div class="common">
+          <div class="label">直播地址:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val[0].LiveChannelStream"
+              clearable>
+            </el-input>
+          </div>
+        </div>
+        <div class="common">
+          <div class="label">直播名称:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val[0].LiveName"
+              clearable>
+            </el-input>
+          </div>
+        </div>
+        <div class="common">
+          <div class="label">应用名称:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val[0].AppName"
+              clearable>
+            </el-input>
+          </div>
+        </div>
+        <div class="common">
+          <div class="label">直播截图:</div>
+          <div class="value">
+            <el-input
+              placeholder="请输入内容"
+              v-model="val[0].liveCaptureUrl"
+              clearable>
+            </el-input>
+          </div>
+        </div>
       </div>
     </el-card>
 
@@ -132,36 +172,6 @@
             <el-input
               placeholder="请输入内容"
               v-model="val[1].Channel"
-              clearable>
-            </el-input>
-          </div>
-        </div>
-        <div class="common">
-          <div class="label">直播地址:</div>
-          <div class="value">
-            <el-input
-              placeholder="请输入内容"
-              v-model="val[1].LiveChannelStream"
-              clearable>
-            </el-input>
-          </div>
-        </div>
-        <div class="common">
-          <div class="label">直播名称:</div>
-          <div class="value">
-            <el-input
-              placeholder="请输入内容"
-              v-model="val[1].LiveName"
-              clearable>
-            </el-input>
-          </div>
-        </div>
-        <div class="common">
-          <div class="label">应用名称:</div>
-          <div class="value">
-            <el-input
-              placeholder="请输入内容"
-              v-model="val[1].AppName"
               clearable>
             </el-input>
           </div>

@@ -109,7 +109,7 @@
 
       </div>
     </div>
-    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="1vh" width="90%">
+    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="1vh" width="1800px">
       <information v-if="addDialog" :row="row" @cancel="cancel" @submit="submit"/>
     </el-dialog>
   </div>

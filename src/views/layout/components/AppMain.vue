@@ -16,8 +16,9 @@ export default {
 <style>
   .app-main {
     background: #ECF0F5;
-    position: absolute;
-    width: 100%;
-    height: calc(100% - 68px);
+    width: 1920px;
+    /*position: absolute;*/
+    /*width: 100%;*/
+    /*height: calc(100% - 68px);*/
   }
 </style>

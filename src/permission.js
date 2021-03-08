@@ -7,6 +7,8 @@ import { getToken } from '@/utils/cache' // 验权
 
 const whiteList = [] // 不重定向白名单
 router.beforeEach(async (to, from, next) => {
+  // 切换路由时取消正在pending的请求
+  store.commit('clearCancelToken')
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {

@@ -153,7 +153,7 @@
       v-el-drag-dialog
       :before-close="handleClose"
       :title="title"
-      width="90%"
+      width="1800px"
       :visible.sync="addDialog"
       top="3vh">
       <information

@@ -101,7 +101,6 @@
       <div class="other">
         <div class="common file pic">
 <!--          <input type="file" name="" id="" @change="chose">-->
-
 <!--          <el-upload-->
 <!--            action=""-->
 <!--            :auto-upload=false-->
@@ -308,6 +307,8 @@ export default {
     }
 
     .other {
+      width: 1078px;
+      overflow-x: auto;
       margin-left: 50px;
       display: flex;
       align-items: flex-start;

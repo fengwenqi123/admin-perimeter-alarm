@@ -21,6 +21,16 @@ export default {
       flvPlayer: null
     }
   },
+  watch: {
+    val: {
+      handler () {
+        this.close()
+        setTimeout(() => {
+          this.play()
+        }, 100)
+      }
+    }
+  },
   mounted () {
     this.play()
   },
@@ -31,20 +41,24 @@ export default {
         var videoElement = document.getElementById(this.val.id)
         this.flvPlayer = flvjs.createPlayer({
           type: 'flv',
+          hasAudio: false,
           url: url
         })
         this.flvPlayer.attachMediaElement(videoElement)
         this.flvPlayer.load()
         this.flvPlayer.play()
       }
+    },
+    close () {
+      this.flvPlayer.pause()
+      this.flvPlayer.unload()
+      this.flvPlayer.detachMediaElement()
+      this.flvPlayer.destroy()
+      this.flvPlayer = null
     }
   },
   beforeDestroy () {
-    this.flvPlayer.pause()
-    this.flvPlayer.unload()
-    this.flvPlayer.detachMediaElement()
-    this.flvPlayer.destroy()
-    this.flvPlayer = null
+    this.close()
   }
 }
 </script>

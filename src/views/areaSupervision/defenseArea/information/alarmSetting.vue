@@ -16,6 +16,7 @@
             <el-checkbox v-model="val.oneLevelJson.VoiceStatus">声光告警</el-checkbox>
             <el-checkbox v-model="val.oneLevelJson.LightStatus">灯光告警</el-checkbox>
             <el-checkbox v-model="val.oneLevelJson.CenterStatus">指挥中心告警</el-checkbox>
+            <el-checkbox v-model="val.oneLevelJson.HighVoice">高音喇叭告警</el-checkbox>
           </div>
       </div>
     </div>
@@ -36,6 +37,28 @@
           <el-checkbox v-model="val.twoLevelJson.VoiceStatus">声光告警</el-checkbox>
           <el-checkbox v-model="val.twoLevelJson.LightStatus">灯光告警</el-checkbox>
           <el-checkbox v-model="val.twoLevelJson.CenterStatus">指挥中心告警</el-checkbox>
+          <el-checkbox v-model="val.twoLevelJson.HighVoice">高音喇叭告警</el-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <div class="common">
+      <div class="label">三级告警设置:</div>
+      <div class="value">
+        <el-tooltip :content="'状态:' + getStatus(val.threeLevelStatus)" placement="top">
+          <el-switch
+            v-model="val.threeLevelStatus"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value='1'
+            inactive-value='2'>
+          </el-switch>
+        </el-tooltip>
+        <div class="checkbox">
+          <el-checkbox v-model="val.threeLevelJson.VoiceStatus">声光告警</el-checkbox>
+          <el-checkbox v-model="val.threeLevelJson.LightStatus">灯光告警</el-checkbox>
+          <el-checkbox v-model="val.threeLevelJson.CenterStatus">指挥中心告警</el-checkbox>
+          <el-checkbox v-model="val.threeLevelJson.HighVoice">高音喇叭告警</el-checkbox>
         </div>
       </div>
     </div>

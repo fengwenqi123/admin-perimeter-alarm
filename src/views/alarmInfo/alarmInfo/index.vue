@@ -113,7 +113,7 @@
           <el-table-column
             label="类别">
             <template slot-scope="scope">
-              {{scope.row.alarmType==1?'一级告警':'二级告警'}}
+              {{scope.row.alarmType==1?'一级告警':scope.row.alarmType==2?'二级告警':'三级告警'}}
             </template>
           </el-table-column>
           <el-table-column
@@ -183,7 +183,7 @@
         </div>
       </div>
     </el-card>
-    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="1vh" width="90%">
+    <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" top="1vh" width="1800px">
       <information v-if="addDialog" :row="row" @cancel="cancel" @submit="submit"/>
     </el-dialog>
   </div>
@@ -199,6 +199,7 @@ import information from './information'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Paginations'
 import tableMixin from '@/mixins/tableMixin'
+import bus from '@/components/bus'
 
 export default {
   components: {
@@ -228,6 +229,9 @@ export default {
       }, {
         label: '二级告警',
         value: 2
+      }, {
+        label: '三级告警',
+        value: 3
       }],
       status: null,
       statusOption: [{
@@ -254,12 +258,23 @@ export default {
     this.list()
     this.getPartition()
   },
+  mounted () {
+    this.onBus()
+  },
   methods: {
+    onBus () {
+      bus.$on('alarm', (item) => {
+        this.title = '查看'
+        this.row = item
+        this.readonly = true
+        this.addDialog = true
+      })
+    },
     search () {
       this.list()
     },
     list () {
-      lists(this.page.pageNum, this.page.pageSize, this.order, this.sort, this.status, this.keyword).then(response => {
+      lists(this.page.pageNum, this.page.pageSize, this.order, this.sort, this.boundaryId, this.areaId, this.alarmType, this.status, this.startTime, this.endTime, this.keyword).then(response => {
         this.tableData = response.data.dataList
         this.page = response.data.page
       })
