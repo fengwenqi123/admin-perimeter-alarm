@@ -43,7 +43,7 @@ const system = {
       path: 'alarmParam',
       name: 'alarmParam',
       component: () => import('@/views/system/alarmParam/index.vue'),
-      meta: { keepAlive: false, title: '告警参数', roles: ['sys:personnel'] }
+      meta: { keepAlive: false, title: '告警参数', roles: ['sys:alarmParam'] }
     }
   ]
 }

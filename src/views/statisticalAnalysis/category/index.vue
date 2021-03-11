@@ -86,7 +86,10 @@
             label="二级告警"
             prop="c2">
           </el-table-column>
-
+          <el-table-column
+            label="三级告警"
+            prop="c3">
+          </el-table-column>
         </el-table>
       </div>
     </el-card>
@@ -99,7 +102,7 @@ import { lists } from '@/api/category'
 import { listsNoPage } from '@/api/partition'
 import { listsNoPage as defenseAreaList } from '@/api/defenseArea'
 import { getLastMonth, getNowTime } from '@/utils/day'
-import echarts from '../echarts/index'
+import echarts from './echarts'
 
 export default {
   components: {
@@ -116,7 +119,7 @@ export default {
       defenseAreaOption: null,
       disabled: true,
       tableData: null,
-      chartType: ['一级告警', '二级告警']
+      chartType: ['一级告警', '二级告警', '三级告警']
 
     }
   },

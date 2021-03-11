@@ -132,7 +132,7 @@
           </div>
         </div>
     </el-card>
-      <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" width="1800px">
+      <el-dialog v-el-drag-dialog :title="title" :visible.sync="addDialog" :before-close="handleClose" width="1800px" top="3vh">
         <information v-if="addDialog" :row="row" :readonly="readonly" @cancel="cancel" @submit="submit" />
       </el-dialog>
   </div>

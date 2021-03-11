@@ -11,32 +11,40 @@
           </div>
         </div>
         <div class="error-list">
-          <el-scrollbar class="scrolls">
-            <div class="title">
-              预警日志
-            </div>
-            <ul>
-              <li v-for="item in boundaryAlarmList" :key="item.id">
-                <div class="item" @click="showAlarm(item)">
-                  <div class="left">
-                    <div class="time">{{ item.startTimeStr }}</div>
-                    <div class="level">
-                      {{
-                        item.alarmType === 1
-                          ? "一"
-                          : item.alarmType === 2
-                          ? "二"
-                          : "三"
-                      }}级告警
-                    </div>
-                  </div>
-                  <div class="right">
-                    {{ item.status === 1 ? "未处理" : "已处理" }}
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </el-scrollbar>
+          <el-tabs type="border-card">
+            <el-tab-pane label="预警日志">
+              <div class="log">
+                <el-scrollbar class="scrolls">
+                  <ul>
+                    <li v-for="item in boundaryAlarmList" :key="item.id">
+                      <div class="item" @click="showAlarm(item)">
+                        <div class="left">
+                          <div class="time">{{ item.startTimeStr }}</div>
+                          <div class="level">
+                            {{
+                              item.alarmType === 1
+                                ? "一"
+                                : item.alarmType === 2
+                                ? "二"
+                                : "三"
+                            }}级告警
+                          </div>
+                        </div>
+                        <div class="right" :class="{'IsStatus':item.status === 2}">
+                          {{ item.status === 1 ? "未处理" :item.status === 2 ? "已处理": "" }}
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </el-scrollbar>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="点云">
+              <div class="three-model" v-show="flag">
+                <threeModel :boundaryId="id" @showThree="showThree"></threeModel>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </div>
     </div>
@@ -48,12 +56,13 @@ import dialogFormMixin from '@/mixins/dialogFormMixin'
 import { getDataById } from '@/api/partition'
 import flv from '@/components/flv'
 import { getRealAlarm } from '@/api/smartMonitor'
-import bus from '@/components/bus'
+import threeModel from './threeModel'
 
 export default {
   mixins: [dialogFormMixin],
   components: {
-    flv
+    flv,
+    threeModel
   },
   props: {
     id: {
@@ -71,7 +80,8 @@ export default {
       panoramaVideo: {
         url: '',
         id: 'panoramaVideo'
-      }
+      },
+      flag: false
     }
   },
   created () {
@@ -99,7 +109,13 @@ export default {
       })
     },
     showAlarm (item) {
-      bus.$emit('alarm', item)
+      this.$router.push({
+        name: 'alarmInfo'
+      })
+      this.$store.commit('addAlarmInfo', item)
+    },
+    showThree () {
+      this.flag = true
     }
   }
 }
@@ -107,17 +123,17 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .information-main {
-  height: 700px;
+  height: 510px;
   .information-form {
     height: 100%;
     display: flex;
     flex-wrap: nowrap;
     .video {
-      width: 1200px;
+      width: 850px;
 
       .big-video {
         position: relative;
-        height: 700px;
+        height: 480px;
 
         .small-video {
           width: 350px;
@@ -133,10 +149,8 @@ export default {
       height: 100%;
       flex: 1;
       margin-left: 20px;
-      .title {
-        font-size: 16px;
-        margin: 10px 0;
-        font-weight: bold;
+      .log{
+        height: 410px;
       }
       ul {
         li {
@@ -146,13 +160,23 @@ export default {
             align-items: center;
             justify-content: space-between;
             padding: 10px;
+            cursor: pointer;
             .left {
               .level {
                 margin-top: 4px;
               }
             }
+            .right{
+              color: red;
+            }
+            .IsStatus{
+              color: #13ce66;
+            }
           }
         }
+      }
+      .three-model{
+        height: 410px;
       }
     }
   }

@@ -79,11 +79,11 @@
             prop="total">
           </el-table-column>
           <el-table-column
-            label="一级告警"
+            label="未处理"
             prop="c1">
           </el-table-column>
           <el-table-column
-            label="二级告警"
+            label="已处理"
             prop="c2">
           </el-table-column>
 

@@ -49,7 +49,7 @@
         </div>
         <div class="other">
           <div class="common file pic">
-            <canvas id="myCanvas"></canvas>
+            <canvas id="myCanvas" v-dragged="onDragged"></canvas>
           </div>
         </div>
       </div>
@@ -216,6 +216,16 @@ export default {
       this.ctx.fillText(name, x * this.canvas.width, y * this.canvas.height - 5)
       this.ctx.closePath()
       this.ctx.fill()
+    },
+    onDragged ({
+      el,
+      deltaX,
+      deltaY
+    }) {
+      var l = +window.getComputedStyle(el).left.slice(0, -2) || 0
+      var t = +window.getComputedStyle(el).top.slice(0, -2) || 0
+      el.style.left = l + deltaX + 'px'
+      el.style.top = t + deltaY + 'px'
     }
   }
 }
@@ -275,13 +285,18 @@ export default {
 
     .other {
       width: 1078px;
-      overflow-x: auto;
       margin-left: 50px;
-      display: flex;
-      align-items: flex-start;
+      height: 600px;
+      overflow: hidden;
 
       .common {
-        width: 400px;
+        position: relative;
+        margin-left: 20px;
+        width: 100%;
+        height: 100%;
+        #myCanvas{
+          position: absolute;
+        }
 
         i {
           margin-left: 10px;
@@ -304,15 +319,6 @@ export default {
             font-size: 30px;
           }
         }
-      }
-
-      .file {
-        margin-left: 20px;
-        width: auto;
-      }
-
-      .pic {
-        overflow: auto;
       }
     }
   }

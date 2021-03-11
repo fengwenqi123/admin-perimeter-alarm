@@ -73,7 +73,7 @@ export default {
       .jc{
         //text-align: center;
         background: #ECF0F5;
-        padding: 20px 150px;
+        width: 1740px;
         height: 100%;
       }
       .video{

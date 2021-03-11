@@ -260,7 +260,6 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  position: absolute;
   height: 100%;
   width: 100%;
   background: #fff;
@@ -270,7 +269,7 @@ export default {
     margin: 0 auto;
 
     .box-card {
-      margin-top: 20px;
+      padding-top: 20px;
 
       .common {
         display: flex;

@@ -83,6 +83,9 @@ ul{
 }
 
 .home{
+  .el-dialog__wrapper{
+    width: 1920px;
+  }
   .el-dialog{
     //left: -1920px;
   }

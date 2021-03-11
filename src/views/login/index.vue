@@ -1,86 +1,87 @@
 <template>
-  <div class="login-container">
-    <div class="fff" />
-    <div class="juxing">
-      <img src="../../assets/img/backgroundblue.png" alt="">
-    </div>
-    <el-form
-      ref="loginForm"
-      class="login-form"
-      auto-complete="on"
-      :model="loginForm"
-      label-position="left"
-    >
-      <h3 class="title">
-        用户登录
-      </h3>
-      <el-form-item prop="username">
-        <span class="svg-container svg-container_login">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          v-model="loginForm.username"
-          type="text"
-          auto-complete="on"
-          placeholder="请输入用户名"
-        />
-      </el-form-item>
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          v-model="loginForm.password"
-          name="password"
-          :type="pwdType"
-          auto-complete="on"
-          placeholder="请输入密码"
-          @keyup.enter.native="handleLogin"
-        />
-        <span
-          class="show-pwd"
-          @click="showPwd"
-        ><svg-icon icon-class="eye" /></span>
-      </el-form-item>
-      <div class="clearfix">
-        <el-checkbox v-model="checked">
-          记住密码
-        </el-checkbox>
-        <el-button
-          type="primary"
-          style="width:250px;margin-left: 114px;"
-          :loading="loading"
-          @click.native.prevent="handleLogin"
-        >
-          登录
-        </el-button>
+  <div class="container">
+    <div class="top">
+      <div class="logo">
+        <div class="tit">三维激光哨兵</div>
       </div>
-    </el-form>
+      <div class="set">
+        <div class="tit">技术支持：0571-28000066</div>
+      </div>
+    </div>
+    <div class="main">
+      <div class="tip">
+        <div class="login-container">
+          <el-form
+            class="login-form"
+            auto-complete="on"
+            :model="loginForm"
+            ref="loginForm"
+            :rules="loginRules"
+            label-position="left"
+          >
+            <div class="title">用户登录</div>
+            <el-form-item prop="username">
+              <span class="svg-container svg-container_login">
+                <svg-icon icon-class="user" />
+              </span>
+              <el-input
+                type="text"
+                v-model="loginForm.username"
+                auto-complete="on"
+                placeholder="请输入用户名"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <span class="svg-container">
+                <svg-icon icon-class="password"></svg-icon>
+              </span>
+              <el-input
+                name="password"
+                placeholder="请输入密码"
+                @keyup.enter.native="handleLogin"
+                v-model="loginForm.password"
+                auto-complete="on"
+                show-password
+              ></el-input>
+            </el-form-item>
+            <div class="login-button">
+              <el-checkbox v-model="checked">记住密码</el-checkbox>
+              <el-button
+                type="primary"
+                :loading="loading"
+                @click.native.prevent="handleLogin"
+              >登录</el-button
+              >
+            </div>
+            <span class="font">建议屏幕分辨率大于1600*900</span>
+          </el-form>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      浙江华是科技提供技术支持
+    </div>
   </div>
 </template>
 
 <script>
-// import { isvalidUsername } from '@/utils/validate'
-import { setToken } from '@/utils/cache'
+import {
+  setuser,
+  setpassword,
+  getuser,
+  getpassword,
+  removeuser,
+  removepassword,
+  setToken
+} from '@/utils/cache'
+import logo from '@/assets/img/logo.png'
 
 export default {
-  name: 'Login',
+  name: 'login',
   data () {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!isvalidUsername(value)) {
-    //     callback(new Error('请输入正确的用户名'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
-    // const validatePass = (rule, value, callback) => {
-    //   if (value.length < 5) {
-    //     callback(new Error('密码不能小于5位'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     return {
+      logo,
+      eye: 'close',
       checked: false,
       loginForm: {
         username: '',
@@ -88,213 +89,317 @@ export default {
         loginType: 0,
         loginSource: 1
       },
-      // loginRules: {
-      //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-      //   password: [{ required: true, trigger: 'blur', validator: validatePass }]
-      // },
+      loginRules: {
+        username: [
+          { required: true, trigger: 'blur', message: '请输入用户名' }
+        ],
+        password: [{ required: true, trigger: 'blur', message: '请输入密码' }]
+      },
       loading: false,
       pwdType: 'password'
     }
   },
-  mounted () {
-    // if (getuser()) {
-    //   this.loginForm.username = getuser()
-    //   this.loginForm.password = getpassword()
-    // }
-  },
   methods: {
     showPwd () {
       if (this.pwdType === 'password') {
+        this.eye = 'open'
         this.pwdType = ''
       } else {
+        this.eye = 'close'
         this.pwdType = 'password'
       }
     },
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
+        // console.log(valid)
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then((response) => {
-            setToken(response.data)
-            // if (this.checked) {
-            //   setuser(this.loginForm.username)
-            //   setpassword(this.loginForm.password)
-            // } else {
-            //   removeuser()
-            //   removepassword()
-            // }
-            this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          this.$store
+            .dispatch('Login', this.loginForm)
+            .then(res => {
+              setToken(res.data)
+              if (this.checked) {
+                setuser(this.loginForm.username)
+                setpassword(this.loginForm.password)
+              } else {
+                removeuser()
+                removepassword()
+              }
+              this.loading = false
+              this.$router.push({ path: '/' })
+            })
+            .catch(() => {
+              this.loading = false
+            })
         } else {
           console.log('error submit!!')
           return false
         }
       })
     }
+  },
+  mounted () {
+    if (getuser()) {
+      this.loginForm.username = getuser()
+      console.log(getpassword())
+      if (getpassword()) {
+        this.checked = true
+        this.loginForm.password = getpassword()
+      }
+    }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  $bg: #2d3a4b;
-  $light_gray: #eee;
+$bg: #2d3a4b;
+$light_gray: #eee;
+.login-container {
+  .el-input {
+    display: inline-block;
+    height: 47px;
+    width: 85%;
 
-  /* reset element-ui css */
-  .login-container {
-    .el-input {
-      display: inline-block;
+    input {
+      background: transparent;
+      border: 0px;
+      -webkit-appearance: none;
+      border-radius: 0px;
+      padding: 12px 5px 12px 15px;
+      color: #000;
       height: 47px;
-      width: 85%;
 
-      input {
-        background: transparent;
-        border: 0px;
-        -webkit-appearance: none;
-        border-radius: 0px;
-        padding: 12px 5px 12px 15px;
-        color: #000;
-        height: 47px;
-
-        &:-webkit-autofill {
-          -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
-          -webkit-text-fill-color: #fff !important;
-        }
-      }
-    }
-
-    .el-form-item {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-      color: #454545;
-    }
-
-    .el-button {
-      span {
-        font-size: 18px;
+      &:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
+        -webkit-text-fill-color: #fff !important;
       }
     }
   }
 
+  .el-form-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #454545;
+  }
+
+  .el-button {
+    span {
+      font-size: 18px;
+    }
+  }
+}
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  $bg: #2d3a4b;
-  $dark_gray: #889aa4;
-  $light_gray: #eee;
-  .login-container {
-    .clearfix {
-      display: flex;
-      align-items: center; /*垂直居中*/
-      justify-content: flex-end; /*水平居中*/
-    }
-
-    position: fixed;
-    height: 100%;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
+.container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  display: flex;
+  flex-wrap: wrap;
+  .top {
     width: 100%;
-    background: url("../../assets/img/background.jpg") no-repeat;
-    background-size: 100% 100%;
-
-    .fff {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    .all {
-      opacity: 1;
-      filter: alpha(opacity=100); /* IE8 及其更早版本 */
-      margin-top: 150px;
-      width: 850px;
-
-      .logo {
-        width: 250px;
-        margin: 0 auto;
-      }
-
-      .title1 {
-        width: 90%;
-        margin: 20px auto;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .logo{
+      margin-left: 100px;
+      .tit{
+        font-family: AdobeHeiti;
+        font-size: 30px;
       }
     }
-
-    .login-form {
-      position: absolute;
-      right: 40px;
-      width: 520px;
-      padding: 35px 35px 15px 35px;
-      margin: 238px auto;
-      z-index: 11;
-    }
-
-    .tips {
-      font-size: 14px;
-      color: #fff;
-      margin-bottom: 10px;
-
-      span {
-        &:first-of-type {
-          margin-right: 16px;
-        }
+    .set{
+      margin-right: 100px;
+      .tit{
+        font-size: 30px;
       }
-    }
-
-    .svg-container {
-      padding: 6px 5px 6px 15px;
-      color: $dark_gray;
-      vertical-align: middle;
-      width: 30px;
-      display: inline-block;
-
-      &_login {
-        font-size: 20px;
-      }
-    }
-
-    .title {
-      font-size: 30px;
-      font-weight: bold;
-      color: #01579B;
-      margin: 0px auto 40px auto;
-      text-align: center;
-    }
-
-    .show-pwd {
-      position: absolute;
-      right: 10px;
-      top: 7px;
-      font-size: 16px;
-      color: $dark_gray;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .juxing {
-      position: fixed;
-      height: 100%;
-      z-index: 10;
-      opacity: 0.8;
-      filter: alpha(opacity=80); /* IE8 及其更早版本 */
-      background-size: 100% 100%;
-
-      img {
-        height: 100%;
-      }
-    }
-
-    .tishi {
-      position: absolute;
-      bottom: -50px;
-      right: 35px;
-      font-size: 15px;
-      cursor: pointer;
-      color: #01579b;
-      font-weight: bold;
     }
   }
+  .foot {
+    width: 100%;
+    height: 10%;
+    font-size: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #696969;
+  }
+  .main {
+    width: 100%;
+    height: 80%;
+    position: relative;
+    background: url("../../assets/img/background.jpg") no-repeat;
+    background-size: 100% 100%;
+    .tip {
+      position: absolute;
+      top: 100px;
+      right: 100px;
+      .login-container {
+        //position: fixed;
+        //width: 100%;
+        //// background: url("../../assets/img/login_background.png") no-repeat;
+        //background: #f2f2f2;
+        //background-size: 100% 100%;
 
+        .clearfix {
+          display: flex;
+          align-items: center; /*垂直居中*/
+          justify-content: flex-end; /*水平居中*/
+        }
+
+        .all {
+          opacity: 1;
+          filter: alpha(opacity=100); /* IE8 及其更早版本 */
+          margin-top: 150px;
+          width: 850px;
+
+          .logo {
+            width: 250px;
+            margin: 0 auto;
+          }
+
+          .title1 {
+            width: 90%;
+            margin: 20px auto;
+          }
+        }
+
+        .login-form {
+          width: 350px;
+          height: 400px;
+          padding: 35px 35px 15px 35px;
+          z-index: 11;
+          background: #fff;
+          border-radius: 5px;
+          .title {
+            font-size: 25px;
+            color: #1482f0;
+          }
+          img {
+            width: 140px;
+            margin-bottom: 10px;
+          }
+          p {
+            text-align: right;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #888;
+          }
+        }
+
+        .tips {
+          font-size: 14px;
+          color: #fff;
+          margin-bottom: 10px;
+
+          span {
+            &:first-of-type {
+              margin-right: 16px;
+            }
+          }
+        }
+
+        .svg-container {
+          padding-left: 12px;
+          color: $dark_gray;
+          vertical-align: middle;
+          width: 30px;
+          display: inline-block;
+
+          &_login {
+            font-size: 20px;
+          }
+
+          .svg-icon {
+            font-size: 25px;
+          }
+        }
+
+        .title {
+          font-size: 30px;
+          font-weight: normal;
+          color: #409eff;
+          margin: 0px auto 40px auto;
+          text-align: center;
+        }
+
+        .show-pwd {
+          position: absolute;
+          right: 10px;
+          top: 7px;
+          font-size: 16px;
+          color: $dark_gray;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .banner {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 10;
+          filter: alpha(opacity=80); /* IE8 及其更早版本 */
+          background-size: 100% 100%;
+          /deep/ .el-carousel {
+            height: 100%;
+            width: 100%;
+          }
+          /deep/ .el-carousel__container {
+            height: 100%;
+            width: 100%;
+          }
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .tishi {
+          position: absolute;
+          bottom: -50px;
+          right: 35px;
+          font-size: 15px;
+          cursor: pointer;
+          color: #01579b;
+          font-weight: bold;
+        }
+
+        .login-button {
+          .el-button {
+            width: 100%;
+            margin-top: 30px;
+          }
+        }
+        .font {
+          padding-top: 10px;
+          color: #888;
+          width: 100%;
+          text-align: right;
+          display: inline-block;
+          font-size: 12px;
+        }
+      }
+      .p1 {
+        font-family: AdobeHeiti;
+        font-size: 50px;
+        color: #255cae;
+      }
+      .p2 {
+        margin-top: 30px;
+        font-family: AdobeHeiti;
+        margin-left: 280px;
+        font-size: 50px;
+        color: #255cae;
+      }
+    }
+  }
+}
 </style>

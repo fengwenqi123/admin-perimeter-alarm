@@ -60,14 +60,14 @@ export function disable (id) {
 
 export function findRole () {
   return request({
-    url: '/account/authorize/findAllListWithPid',
+    url: '/simple/authorize/findAllListWithPid',
     method: 'GET'
   })
 }
 
 export function findRoleById (roleId) {
   return request({
-    url: '/account/authorize/findListByRole',
+    url: '/simple/authorize/findListByRole',
     method: 'GET',
     params: {
       roleId

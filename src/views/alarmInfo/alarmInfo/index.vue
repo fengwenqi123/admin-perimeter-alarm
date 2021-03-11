@@ -119,19 +119,19 @@
           <el-table-column
             label="距离（米）">
             <template slot-scope="scope">
-              {{point(scope.row.position,1)}}
+              {{scope.row.d}}
             </template>
           </el-table-column>
           <el-table-column
             label="高（米）">
             <template slot-scope="scope">
-              {{point(scope.row.position,2)}}
+              {{scope.row.h}}
             </template>
           </el-table-column>
           <el-table-column
             label="宽（米）">
             <template slot-scope="scope">
-              {{point(scope.row.position,3)}}
+              {{scope.row.w}}
             </template>
           </el-table-column>
           <el-table-column
@@ -199,7 +199,7 @@ import information from './information'
 import elDragDialog from '@/directive/el-drag-dialog'
 import Pagination from '@/components/Paginations'
 import tableMixin from '@/mixins/tableMixin'
-import bus from '@/components/bus'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -209,6 +209,11 @@ export default {
   },
   directives: { elDragDialog },
   mixins: [tableMixin],
+  computed: {
+    ...mapGetters([
+      'alarmInfo'
+    ])
+  },
   data () {
     return {
       disabled: true,
@@ -252,24 +257,26 @@ export default {
       } else {
         this.disabled = true
       }
+    },
+    alarmInfo: {
+      handler (newVal) {
+        if (newVal) {
+          this.title = '查看'
+          this.row = this.alarmInfo
+          this.readonly = true
+          this.addDialog = true
+          this.$store.commit('clearAlarmInfo')
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   created () {
     this.list()
     this.getPartition()
   },
-  mounted () {
-    this.onBus()
-  },
   methods: {
-    onBus () {
-      bus.$on('alarm', (item) => {
-        this.title = '查看'
-        this.row = item
-        this.readonly = true
-        this.addDialog = true
-      })
-    },
     search () {
       this.list()
     },
@@ -288,10 +295,6 @@ export default {
       defenseAreaList(this.boundaryId).then(response => {
         this.defenseAreaOption = response.data
       })
-    },
-    point (point, i) {
-      const p = point.split('：')
-      return parseFloat(p[i]) || null
     }
   }
 }

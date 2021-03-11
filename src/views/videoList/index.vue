@@ -49,12 +49,14 @@ export default {
       list2: [],
       inx: null,
       i: 0,
-      handleClose: null
+      handleClose: null,
+      flag: true
 
     }
   },
   created () {
     this.onBus()
+    this.ergodic()
   },
   watch: {
     inx (newVal) {
@@ -64,6 +66,7 @@ export default {
             id: `flv_${item.id}`,
             url: item.LiveChannelStream
           }
+          console.log(this.video)
         }
       })
     }
@@ -78,22 +81,24 @@ export default {
     init (arr) {
       this.list1 = []
       this.list2 = []
+      if (this.flag) {
+        this.inx = arr[0].id
+        this.flag = false
+      }
       arr.forEach((item, index) => {
-        if (index === 0) {
-          this.inx = item.id
-        }
         if (index < 6) {
           this.list1.push(item)
         } else {
           this.list2.push(item)
         }
       })
-      clearInterval(this.handleClose)
-      this.ergodic()
+      // clearInterval(this.handleClose)
+      // this.ergodic()
     },
     handleSelect (item) {
       this.inx = item.id
     },
+    // loop播放列表
     ergodic () {
       this.i = 0
       this.handleClose = setInterval(() => {
@@ -106,7 +111,7 @@ export default {
         }
         console.log(this.i)
         this.i += 1
-      }, 20000)
+      }, 12000)
     }
   }
 }
@@ -121,7 +126,7 @@ export default {
 
     .video {
       width: 1200px;
-      height: 612px;
+      height: 594px;
     }
 
     .img {
@@ -130,7 +135,7 @@ export default {
 
       .image {
         width: 300px;
-        height: 204px;
+        height: 196px;
       }
     }
   }
@@ -142,7 +147,7 @@ export default {
 
       img {
         width: 300px;
-        height: 204px;
+        height: 190px;
       }
     }
   }

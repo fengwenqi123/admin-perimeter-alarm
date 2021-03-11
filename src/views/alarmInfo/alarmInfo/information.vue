@@ -173,11 +173,11 @@ export default {
     return {
       trackVideo: {
         url: '',
-        id: 'trackVideo'
+        id: 'alarmTrackVideo'
       },
       panoramaVideo: {
         url: '',
-        id: 'panoramaVideo'
+        id: 'alarmPanoramaVideo'
       },
       alarmDetails: null,
       inx: 1,

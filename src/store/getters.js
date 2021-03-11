@@ -5,6 +5,7 @@ const getters = {
   userInfo: state => state.user.userInfo,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
-  cancelTokenArr: state => state.permission.cancelTokenArr
+  cancelTokenArr: state => state.permission.cancelTokenArr,
+  alarmInfo: state => state.alarm.alarmInfo
 }
 export default getters

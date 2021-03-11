@@ -6,14 +6,14 @@ const alarmInfo = {
   component: Layout,
   redirect: '/alarmInfo/alarm',
   name: 'alarmInfo',
-  // alwaysShow: true,
-  meta: { title: '告警信息', roles: ['sys'], icon: 'sys' },
+  alwaysShow: true,
+  meta: { title: '告警管理', icon: 'sys' },
   children: [
     {
       path: 'alarm',
       name: 'alarm',
       component: () => import('@/views/alarmInfo/alarmInfo/index'),
-      meta: { keepAlive: false, title: '告警信息', roles: ['sys'] }
+      meta: { keepAlive: false, title: '告警信息' }
     }
   ]
 }
