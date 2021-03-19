@@ -32,9 +32,8 @@
               <el-input
                 v-model="form.sort"
                 :readonly="readonly"
-                type="textarea"
-                :rows="6"
-                placeholder="请输入备注"
+                placeholder="请输入排序"
+                clearable
               />
             </el-form-item>
             <el-form-item label="类型:" prop="type">
@@ -108,7 +107,8 @@ export default {
       rules: {
         classification: [{ required: true, message: '请输入分类', trigger: 'blur' }],
         itemName: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
-        itemValue: [{ required: true, message: '请输入项目值', trigger: 'blur' }]
+        itemValue: [{ required: true, message: '请输入项目值', trigger: 'blur' }],
+        sort: [{ required: true, message: '请输入排序', trigger: 'blur' }]
       }
     }
   },

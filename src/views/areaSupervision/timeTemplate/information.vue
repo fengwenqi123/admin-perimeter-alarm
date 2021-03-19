@@ -101,7 +101,7 @@
                       trigger="click">
                       <div class="box">
                         <el-checkbox-group v-model="checkList">
-                          <el-checkbox v-for="(day,i) in week" :label='day.value' :disabled="index===i">
+                          <el-checkbox v-for="(day,i) in week" :label='day.value' :disabled="index===i" :key="day.value">
                             {{ day.label }}
                           </el-checkbox>
                         </el-checkbox-group>

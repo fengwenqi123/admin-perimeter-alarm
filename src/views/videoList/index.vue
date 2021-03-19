@@ -48,15 +48,13 @@ export default {
       list1: [],
       list2: [],
       inx: null,
-      i: 0,
-      handleClose: null,
-      flag: true
+      i: null,
+      handleClose: null
 
     }
   },
   created () {
     this.onBus()
-    this.ergodic()
   },
   watch: {
     inx (newVal) {
@@ -69,22 +67,29 @@ export default {
           console.log(this.video)
         }
       })
+    },
+    i (newVal) {
+      this.inx = this.list[newVal].id
     }
   },
   methods: {
     onBus () {
       bus.$on('video-list', arr => {
-        this.list = arr
-        this.init(arr)
+        if (JSON.stringify(this.list) !== JSON.stringify(arr)) {
+          this.list = arr
+          this.init(arr)
+          this.handleClose && clearInterval(this.handleClose)
+          this.ergodic()
+        }
       })
     },
     init (arr) {
+      this.i = null
+      this.$nextTick(() => {
+        this.i = 0
+      })
       this.list1 = []
       this.list2 = []
-      if (this.flag) {
-        this.inx = arr[0].id
-        this.flag = false
-      }
       arr.forEach((item, index) => {
         if (index < 6) {
           this.list1.push(item)
@@ -92,25 +97,24 @@ export default {
           this.list2.push(item)
         }
       })
-      // clearInterval(this.handleClose)
-      // this.ergodic()
     },
     handleSelect (item) {
-      this.inx = item.id
+      this.list.forEach((li, index) => {
+        if (li.id === item.id) {
+          this.i = index
+        }
+      })
     },
     // loop播放列表
     ergodic () {
-      this.i = 0
       this.handleClose = setInterval(() => {
-        if (this.i < this.list.length) {
-          this.inx = this.list[this.i].id
+        if (this.list.length > 1) {
+          if (this.i < this.list.length - 1) {
+            this.i += 1
+          } else {
+            this.i = 0
+          }
         }
-        if (this.i === this.list.length) {
-          this.i = 0
-          this.inx = this.list[this.i].id
-        }
-        console.log(this.i)
-        this.i += 1
       }, 12000)
     }
   }

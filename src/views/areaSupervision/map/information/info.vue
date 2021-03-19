@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="other">
-          <div class="common file pic">
+          <div class="common"  @wheel="handleScroll">
             <canvas id="myCanvas" v-dragged="onDragged"></canvas>
           </div>
         </div>
@@ -60,6 +60,7 @@
 <script>
 import { listsNoPage } from '@/api/partition'
 const STARTCOLOR = '#00FF00'
+const maxWidth = 1078
 export default {
   props: {
     Val: {
@@ -87,7 +88,9 @@ export default {
       selectArea: null,
       delFlag: false,
       active: null,
-      upLoadImage: process.env.VUE_APP_BASE_API + 'boundary/warnArea/upload/image'
+      upLoadImage: process.env.VUE_APP_BASE_API + 'boundary/warnArea/upload/image',
+      num: 1.2,
+      baseApi: process.env.VUE_APP_BASE_API
     }
   },
   watch: {
@@ -123,7 +126,7 @@ export default {
     init () {
       if (this.val.id) {
         this.image = new Image()
-        this.image.src = process.env.VUE_APP_BASE_API + 'boundary/images/' + this.val.imageUrl
+        this.image.src = this.baseApi + 'boundary/images/' + this.val.imageUrl
         this.image.onload = () => {
           this.canvasDrawImg()
           this.selectArea = this.val.selectArea
@@ -226,6 +229,36 @@ export default {
       var t = +window.getComputedStyle(el).top.slice(0, -2) || 0
       el.style.left = l + deltaX + 'px'
       el.style.top = t + deltaY + 'px'
+    },
+    add () {
+      if (this.image.width / maxWidth < 3) {
+        this.image.width = this.image.width * this.num
+        this.image.height = this.image.height * this.num
+      }
+    },
+    del () {
+      if (maxWidth / this.image.width < 3) {
+        this.image.width = this.image.width / this.num
+        this.image.height = this.image.height / this.num
+      }
+    },
+    handleScroll (e) {
+      console.log(e)
+      const eventDelta = e.wheelDelta || -e.deltaY * 40
+      if (eventDelta > 0) {
+        this.add()
+      } else {
+        this.del()
+      }
+      this.canvas.width = this.image.width
+      this.canvas.height = this.image.height
+      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
+      this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
+      this.selectArea.forEach(item => {
+        if (item.x && item.y) {
+          this.draw(item.x, item.y, item.name)
+        }
+      })
     }
   }
 }
@@ -290,10 +323,10 @@ export default {
       overflow: hidden;
 
       .common {
-        position: relative;
-        margin-left: 20px;
         width: 100%;
-        height: 100%;
+        position: relative;
+        height: 650px;
+        overflow: hidden;
         #myCanvas{
           position: absolute;
         }
@@ -321,41 +354,6 @@ export default {
         }
       }
     }
-  }
-}
-
-.common {
-  .file {
-    cursor: pointer;
-    position: relative;
-    display: inline-block;
-    background: #D0EEFF;
-    border: 1px solid #99D3F5;
-    border-radius: 4px;
-    padding: 4px 12px;
-    overflow: hidden;
-    color: #1E88C7;
-    text-decoration: none;
-    text-indent: 0;
-    line-height: 20px;
-    margin-right: 30px;
-  }
-
-  .file input {
-    position: absolute;
-    font-size: 100px;
-    right: 0;
-    top: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .file:hover {
-    background: #AADFFD;
-    border-color: #78C3F3;
-    color: #004974;
-    text-decoration: none;
   }
 }
 

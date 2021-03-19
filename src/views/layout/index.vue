@@ -4,10 +4,10 @@
     <div class="main-container">
       <navbar></navbar>
       <div class="main">
+        <app-main></app-main>
         <div class="jc">
           <home></home>
         </div>
-        <app-main></app-main>
         <div class="video">
           <videoList></videoList>
         </div>
@@ -53,33 +53,33 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/mixin.scss";
+@import "src/styles/mixin.scss";
 
-  .app-wrapper {
-    background: rgba(24, 144, 255, 1);
-    position: relative;
-    height: 100%;
-    width: 100%;
+.app-wrapper {
+  background: rgba(24, 144, 255, 1);
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  .sidebar-container {
+    width: 180px;
+  }
+  .main-container {
+    flex: 1;
+  }
+  .main {
+    height: calc(100% - 68px);
     display: flex;
-    .sidebar-container{
-      width: 180px;
+    .jc {
+      //text-align: center;
+      background: #ecf0f5;
+      width: 1920px;
+      height: 100%;
     }
-    .main-container{
-      flex: 1;
-    }
-    .main{
-      height: calc(100% - 68px);
-      display: flex;
-      .jc{
-        //text-align: center;
-        background: #ECF0F5;
-        width: 1740px;
-        height: 100%;
-      }
-      .video{
-        background: #ECF0F5;
-        width: 1920px;
-      }
+    .video {
+      background: #ecf0f5;
+      width: 1920px;
     }
   }
+}
 </style>

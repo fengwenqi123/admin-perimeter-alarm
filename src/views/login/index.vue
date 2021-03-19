@@ -2,7 +2,7 @@
   <div class="container">
     <div class="top">
       <div class="logo">
-        <div class="tit">三维激光哨兵</div>
+        <div class="tit">三维激光扫描机场围界预警防护系统</div>
       </div>
       <div class="set">
         <div class="tit">技术支持：0571-28000066</div>
@@ -53,7 +53,6 @@
               >登录</el-button
               >
             </div>
-            <span class="font">建议屏幕分辨率大于1600*900</span>
           </el-form>
         </div>
       </div>
@@ -240,8 +239,9 @@ $light_gray: #eee;
     background-size: 100% 100%;
     .tip {
       position: absolute;
-      top: 100px;
-      right: 100px;
+      top: 120px;
+      left: 50%;
+      margin-left: -125px;
       .login-container {
         //position: fixed;
         //width: 100%;

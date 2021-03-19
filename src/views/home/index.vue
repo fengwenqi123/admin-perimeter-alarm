@@ -1,7 +1,7 @@
 <template>
   <div class="container home" v-if="mapList">
     <div class="dropdown">
-      <el-dropdown @command="handleCommand">
+      <el-dropdown @command="handleCommand" trigger="click">
         <span class="el-dropdown-link"
           >{{ nowVal.name }}<i class="el-icon-arrow-down el-icon--right"></i
         ></span>
@@ -86,7 +86,7 @@ import elDragDialog from '@/directive/el-drag-dialog'
 import bus from '@/components/bus'
 
 let image = null
-const maxWidth = 1740
+const maxWidth = 1920
 export default {
   directives: {
     elDragDialog

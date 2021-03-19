@@ -1,14 +1,9 @@
 <template>
   <div class="information">
     <div class="information-main">
-      <el-scrollbar class="scrolls">
         <div class="information-form">
-          <div class="left">
-            <img :src="imageSrc" alt="" ref="iamge">
-            <canvas id="canvas">
-            </canvas>
-          </div>
           <div class="right">
+            <el-scrollbar class="scrolls">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>基本信息</span>
@@ -36,9 +31,16 @@
               </div>
               <alarm-area :Val.sync="alarmAreaVal"></alarm-area>
             </el-card>
+            </el-scrollbar>
+          </div>
+          <div class="left" @wheel="handleScroll">
+            <div class="main" v-dragged="onDragged">
+              <img :src="imageSrc" alt="" ref="iamge">
+              <canvas id="canvas">
+              </canvas>
+            </div>
           </div>
         </div>
-      </el-scrollbar>
     </div>
     <div slot="footer" class="information-foot">
       <el-button
@@ -69,10 +71,11 @@ import timeTemp from './information/timeTemp'
 import alarmArea from './information/alarmArea'
 import { add, getDataById, listsNoPage } from '@/api/defenseArea'
 import { getDataById as getDataByIdPar } from '@/api/partition'
-const currentColor = 'yellow'
-const otherColor = '#828282'
-const ctxLineWidth = 4
-
+const currentColor = '#0000FF'
+const otherColor = '#FFFF00'
+const ctxLineWidth = 6
+const maxWidth = 1000
+const STARTCOLOR = '#000000'
 export default {
   mixins: [dialogFormMixin],
   props: {
@@ -95,25 +98,7 @@ export default {
   watch: {
     alarmAreaVal: {
       handler (newVal) {
-        if ((newVal.minDistance || newVal.minDistance === 0) && (newVal.maxDistance || newVal.maxDistance === 0)) {
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-          this.getArea()
-          const x = this.origin.X * this.$refs.iamge.width
-          const y1 = (this.origin.Y - newVal.minDistance * this.unit) * this.$refs.iamge.height
-          const y2 = (this.origin.Y - newVal.maxDistance * this.unit) * this.$refs.iamge.height
-          this.ctx.strokeStyle = currentColor
-          this.ctx.beginPath()
-          this.ctx.moveTo(x, y1)
-          this.ctx.lineTo(x, y2)
-          this.ctx.stroke()
-          this.point = [{
-            X: this.origin.X,
-            Y: this.origin.Y - newVal.minDistance * this.unit
-          }, {
-            X: this.origin.X,
-            Y: this.origin.Y - newVal.maxDistance * this.unit
-          }]
-        }
+        this.watchAlarmAreaVal(newVal)
       },
       deep: true
     }
@@ -149,27 +134,67 @@ export default {
       pointJson: null,
       unit: null,
       origin: null,
-      pointList: null
+      endPoint: null,
+      pointList: null,
+      num: 1.2,
+      partitionLength: null,
+      baseApi: process.env.VUE_APP_BASE_API
     }
   },
   created () {
     this.init()
   },
   methods: {
+    watchAlarmAreaVal (newVal) {
+      this.ctx.lineWidth = ctxLineWidth
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.getArea()
+      if ((newVal.minDistance || newVal.minDistance === 0) && (newVal.maxDistance || newVal.maxDistance === 0)) {
+        // 获取元素对应图片百分比
+        var x1, x2, y1, y2
+        if (this.origin.X < this.pointJson[3].X) {
+          x1 = (newVal.minDistance / this.partitionLength) * parseFloat(this.pointJson[2].Y) * this.unit + parseFloat(this.origin.X)
+          x2 = (newVal.maxDistance / this.partitionLength) * parseFloat(this.pointJson[2].Y) * this.unit + parseFloat(this.origin.X)
+        } else {
+          x1 = parseFloat(this.origin.X) - (newVal.minDistance / this.partitionLength) * parseFloat(this.pointJson[2].Y) * this.unit
+          x2 = parseFloat(this.origin.X) - (newVal.maxDistance / this.partitionLength) * parseFloat(this.pointJson[2].Y) * this.unit
+        }
+        if (this.origin.Y < this.pointJson[3].Y) {
+          y1 = (newVal.minDistance / this.partitionLength) * parseFloat(this.pointJson[2].X) * this.unit + parseFloat(this.origin.Y)
+          y2 = (newVal.maxDistance / this.partitionLength) * parseFloat(this.pointJson[2].X) * this.unit + parseFloat(this.origin.Y)
+        } else {
+          y1 = parseFloat(this.origin.Y) - (newVal.minDistance / this.partitionLength) * parseFloat(this.pointJson[2].X) * this.unit
+          y2 = parseFloat(this.origin.Y) - (newVal.maxDistance / this.partitionLength) * parseFloat(this.pointJson[2].X) * this.unit
+        }
+
+        this.ctx.strokeStyle = currentColor
+        this.ctx.beginPath()
+        this.ctx.moveTo(x1 * this.$refs.iamge.width, y1 * this.$refs.iamge.height)
+        this.ctx.lineTo(x2 * this.$refs.iamge.width, y2 * this.$refs.iamge.height)
+        this.ctx.stroke()
+        this.point = [{
+          X: x1,
+          Y: y1
+        }, {
+          X: x2,
+          Y: y2
+        }]
+      }
+    },
     init () {
       if (this.areaInfo) {
         getDataByIdPar(this.areaInfo.id).then(response => {
-          this.imageSrc = response.data.image
+          this.imageSrc = this.baseApi + 'boundary/images/' + response.data.image
           // 数组奇数位的xy对应偶数位的yx
           this.pointJson = JSON.parse(response.data.pointJson)
-          this.calculation()
-          this.getListFun()
           // 图片加载完成初始化canvas
           const newImg = new Image()
-          newImg.src = response.data.image
+          newImg.src = this.imageSrc
           newImg.onload = () => {
             this.canvasInit()
             // 获取防区详情
+            this.calculation()
+            this.getListFun()
             if (this.id) {
               setTimeout(() => {
                 this.getDataByIdFun()
@@ -209,8 +234,15 @@ export default {
     calculation () {
       // 设置原点
       this.origin = this.pointJson[1]
+      this.endPoint = this.pointJson[3]
       // 计算1米对应图片百分比长度
-      this.unit = (parseFloat(this.pointJson[1].Y) - parseFloat(this.pointJson[3].Y)) / (parseFloat(this.pointJson[2].X) - parseFloat(this.pointJson[0].X))
+      if (parseFloat(this.pointJson[2].X)) {
+        this.unit = Math.abs((parseFloat(this.pointJson[1].Y) - parseFloat(this.pointJson[3].Y)) / (parseFloat(this.pointJson[2].X) - parseFloat(this.pointJson[0].X)))
+      } else {
+        this.unit = Math.abs((parseFloat(this.pointJson[1].X) - parseFloat(this.pointJson[3].X)) / (parseFloat(this.pointJson[2].Y) - parseFloat(this.pointJson[0].Y)))
+      }
+      // 计算原点和终点实际直线距离
+      this.partitionLength = Math.sqrt(Math.pow(parseFloat(this.pointJson[2].X), 2) + Math.pow(parseFloat(this.pointJson[2].Y), 2))
     },
     canvasInit () {
       this.canvas = document.getElementById('canvas')
@@ -222,24 +254,34 @@ export default {
     // 获得分区下所有防区范围
     getListFun () {
       listsNoPage(this.areaInfo.id).then(response => {
-        this.pointList = response.data.reduce((total, currentValue) => {
-          if (currentValue.id === this.id) {
-            return [...total]
-          }
-          const point = JSON.parse(currentValue.pointJson)
-          return [...total, point]
-        }, [])
-        this.getArea()
+        if (response.data) {
+          this.pointList = response.data.reduce((total, currentValue) => {
+            if (currentValue.id === this.id) {
+              return [...total]
+            }
+            const point = JSON.parse(currentValue.pointJson)
+            if (point) {
+              point.push(currentValue.name)
+            }
+            return [...total, point]
+          }, [])
+          this.getArea()
+        }
       })
     },
     getArea () {
-      const x = this.origin.X * this.$refs.iamge.width
       if (this.pointList) {
         this.pointList.forEach(item => {
           this.ctx.strokeStyle = otherColor
+          this.ctx.lineWidth = ctxLineWidth
+          this.ctx.fillStyle = STARTCOLOR
           this.ctx.beginPath()
-          this.ctx.moveTo(x, item[0].Y * this.$refs.iamge.height)
-          this.ctx.lineTo(x, item[1].Y * this.$refs.iamge.height)
+          this.ctx.moveTo(item[0].X * this.$refs.iamge.width, item[0].Y * this.$refs.iamge.height)
+          this.ctx.lineTo(item[1].X * this.$refs.iamge.width, item[1].Y * this.$refs.iamge.height)
+          this.ctx.font = '20px Arial'
+          this.ctx.fillText(item[2], item[0].X * this.$refs.iamge.width, item[0].Y * this.$refs.iamge.height - 5)
+          this.ctx.closePath()
+          this.ctx.fill()
           this.ctx.stroke()
         })
       }
@@ -281,7 +323,7 @@ export default {
         if (obj[key]) {
           Json[key] = 1
         } else {
-          Json[key] = 0
+          Json[key] = 2
         }
       }
       return Json
@@ -289,7 +331,7 @@ export default {
     NumToBoolean (obj) {
       const Json = {}
       for (const key in obj) {
-        if (obj[key]) {
+        if (parseFloat(obj[key]) === 1) {
           Json[key] = true
         } else {
           Json[key] = false
@@ -299,6 +341,39 @@ export default {
     },
     cancel () {
       this.$emit('cancel')
+    },
+    handleScroll (e) {
+      const eventDelta = e.wheelDelta || -e.deltaY * 40
+      if (eventDelta > 0) {
+        this.add()
+      } else {
+        this.del()
+      }
+      this.canvas.width = this.$refs.iamge.width
+      this.canvas.height = this.$refs.iamge.height
+      this.watchAlarmAreaVal(this.alarmAreaVal)
+    },
+    add () {
+      if (this.$refs.iamge.width / maxWidth < 3) {
+        this.$refs.iamge.width = this.$refs.iamge.width * this.num
+        this.$refs.iamge.height = this.$refs.iamge.height * this.num
+      }
+    },
+    del () {
+      if (maxWidth / this.$refs.iamge.width < 3) {
+        this.$refs.iamge.width = this.$refs.iamge.width / this.num
+        this.$refs.iamge.height = this.$refs.iamge.height / this.num
+      }
+    },
+    onDragged ({
+      el,
+      deltaX,
+      deltaY
+    }) {
+      var l = +window.getComputedStyle(el).left.slice(0, -2) || 0
+      var t = +window.getComputedStyle(el).top.slice(0, -2) || 0
+      el.style.left = l + deltaX + 'px'
+      el.style.top = t + deltaY + 'px'
     }
   }
 
@@ -306,11 +381,21 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.information-main{
+  height: 720px;
+}
 .information-form{
   display: flex;
   align-items: flex-start;
   .left{
+    width: 1000px;
+    height: 700px;
     position: relative;
+    overflow: hidden;
+    .main{
+      position: absolute;
+      display: inline-block;
+    }
     #canvas{
       position: absolute;
       top: 0px;
@@ -319,6 +404,7 @@ export default {
   }
   .right{
     margin-left: 20px;
+    height:700px;
   }
 }
 .box-card{

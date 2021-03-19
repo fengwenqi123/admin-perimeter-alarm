@@ -28,7 +28,7 @@ module.exports = {
   },
   chainWebpack (config) {
     config.plugin('html').tap(args => {
-      args[0].title = '三维激光哨兵'
+      args[0].title = '三维激光扫描机场围界预警防护系统'
       return args
     })
     // 修复HMR

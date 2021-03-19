@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { getThreeDataById } from '@/api/partition'
 export default {
   props: {
     boundaryId: {
@@ -24,16 +25,25 @@ export default {
   },
   computed: {
     url () {
-      return process.env.VUE_APP_BASE_WS + this.boundaryId
+      return `ws://${window.location.host}/ws/boundary/cloud/${this.boundaryId}`
+      // return `ws://192.168.1.120:84/ws/boundary/cloud/${this.boundaryId}`
     }
   },
   created () {
-    this.initWebSocket()
+    this.getThreeDataFun()
   },
   destroyed () {
     this.websock.close() // 离开路由之后断开websocket连接
   },
   methods: {
+    getThreeDataFun () {
+      getThreeDataById(this.boundaryId).then(response => {
+        const str = response.data.substr(6).replace(/,/g, '\n')
+        this.$refs.iframe.contentWindow.init(str)
+        this.initWebSocket()
+        this.$emit('showThree')
+      })
+    },
     initWebSocket () {
       // 初始化weosocket
       const wsuri = this.url
@@ -61,7 +71,6 @@ export default {
         this.$refs.iframe.contentWindow.add(str)
       } else if (i === '1') {
         this.$refs.iframe.contentWindow.init(str)
-        console.log(111)
         this.$emit('showThree')
       }
     },

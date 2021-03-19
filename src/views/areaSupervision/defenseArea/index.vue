@@ -90,7 +90,6 @@
             </el-table-column>
             <el-table-column
               prop="description"
-              sortable
               label="描述"
             />
             <el-table-column
@@ -221,7 +220,9 @@ export default {
   },
   methods: {
     getArea () {
-      listsNoPage().then(response => {
+      const keyWord = null
+      const status = 1
+      listsNoPage(keyWord, status).then(response => {
         this.areaOption = response.data
         if (response.data) {
           this.area = response.data[0].id

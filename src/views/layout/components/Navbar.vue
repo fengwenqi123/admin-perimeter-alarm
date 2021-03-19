@@ -1,30 +1,13 @@
 <template>
   <div class="navbar">
     <div class="title">
-      <p>三维激光哨兵</p>
+      <p>三维激光扫描机场围界预警防护系统</p>
     </div>
-    <!--    <div class="tabs">-->
-    <!--&lt;!&ndash;      <div class="sidebar">&ndash;&gt;-->
-    <!--&lt;!&ndash;        <SubMenuTop />&ndash;&gt;-->
-    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
-    <!--      <el-popover placement="bottom" width="150" trigger="click">-->
-    <!--        <ul class="ul1">-->
-    <!--          <li>-->
-    <!--            <div class="item"-->
-    <!--                 @click="logout">-->
-    <!--              <i class="el-icon-third-tuichudenglu"></i>-->
-    <!--              退出登录-->
-    <!--            </div>-->
-    <!--          </li>-->
-    <!--        </ul>-->
-    <!--        <div slot="reference"-->
-    <!--             class="avatar-wrapper">-->
-    <!--          <svg-icon icon-class="avatar" class="user-avatar"></svg-icon>-->
-    <!--          <div class="name">{{userInfo.name}}</div>-->
-    <!--        </div>-->
-    <!--      </el-popover>-->
-    <!--    </div>-->
-
+<!--        <div class="tabs">-->
+<!--          <div class="sidebar">-->
+<!--            <SubMenuTop />-->
+<!--          </div>-->
+<!--        </div>-->
     <div class="tabs">
       <el-popover placement="bottom" width="150" trigger="click">
         <ul class="ul">

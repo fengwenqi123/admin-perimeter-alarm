@@ -287,7 +287,9 @@ export default {
       })
     },
     getPartition () {
-      listsNoPage().then(response => {
+      const keyWord = null
+      const status = 1
+      listsNoPage(keyWord, status).then(response => {
         this.areaOption = response.data
       })
     },

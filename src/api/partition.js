@@ -74,3 +74,10 @@ export function disable (id) {
     data
   })
 }
+
+export function getThreeDataById (id) {
+  return request({
+    url: '/boundary/boundary/getCloudPoints?boundaryId=' + id,
+    method: 'GET'
+  })
+}

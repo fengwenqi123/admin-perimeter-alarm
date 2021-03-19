@@ -27,7 +27,7 @@ const areaSupervision = {
       path: 'timeTemplate',
       name: 'timeTemplate',
       component: () => import('@/views/areaSupervision/timeTemplate/index'),
-      meta: { keepAlive: false, title: '模版设置', roles: ['area:template'] }
+      meta: { keepAlive: false, title: '时间模版设置', roles: ['area:template'] }
     }
   ]
 }

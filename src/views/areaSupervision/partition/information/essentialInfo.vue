@@ -43,11 +43,13 @@
         <div class="common">
           <el-upload
             class="upload-demo"
-            action=""
-            :auto-upload=false
+            :action="upLoadImage"
+            :auto-upload=true
+            name="image"
             :show-file-list=false
             :on-change="handlePreview"
             :on-remove="handleRemove"
+            :on-success="success"
             :file-list="fileList">
             <el-button size="small" type="primary">点击上传分区图</el-button>
           </el-upload>
@@ -75,7 +77,7 @@
           </div>
         </div>
 
-        <p>设置校正点[x,y]</p>
+        <p>设置终点[x,y]</p>
         <div class="common">
           <div class="label">激光坐标:</div>
           <div class="value">
@@ -99,20 +101,8 @@
         </div>
       </div>
       <div class="other">
-        <div class="common file pic">
-<!--          <input type="file" name="" id="" @change="chose">-->
-<!--          <el-upload-->
-<!--            action=""-->
-<!--            :auto-upload=false-->
-<!--            list-type="picture-card"-->
-<!--            :on-change="handlePreview"-->
-<!--            :on-remove="handleRemove">-->
-<!--            <i class="el-icon-plus"></i>-->
-<!--          </el-upload>-->
-          <canvas v-if="image" id="myCanvas"></canvas>
-<!--          <div v-else class="up-load">-->
-<!--            <i class="el-icon-plus"></i>-->
-<!--          </div>-->
+        <div class="common" ref="common" @wheel="handleScroll">
+          <canvas v-dragged="onDragged" v-if="image" id="myCanvas"></canvas>
         </div>
       </div>
       </div>
@@ -123,6 +113,7 @@
 <script>
 const STARTCOLOR = '#00FF00'
 const ENDCOLOR = 'red'
+const maxWidth = 1078
 export default {
   name: 'essentialInfo',
   props: {
@@ -175,13 +166,51 @@ export default {
       plane2: null,
       active: null,
       image: null,
-      fileList: []
+      fileList: [],
+      num: 1.2,
+      upLoadImage: process.env.VUE_APP_BASE_API + 'boundary/warnArea/upload/image',
+      baseApi: process.env.VUE_APP_BASE_API
     }
   },
   created () {
     this.init()
   },
   methods: {
+    onDragged ({
+      el,
+      deltaX,
+      deltaY
+    }) {
+      var l = +window.getComputedStyle(el).left.slice(0, -2) || 0
+      var t = +window.getComputedStyle(el).top.slice(0, -2) || 0
+      el.style.left = l + deltaX + 'px'
+      el.style.top = t + deltaY + 'px'
+    },
+    add () {
+      if (this.image.width / maxWidth < 3) {
+        this.image.width = this.image.width * this.num
+        this.image.height = this.image.height * this.num
+      }
+    },
+    del () {
+      if (maxWidth / this.image.width < 3) {
+        this.image.width = this.image.width / this.num
+        this.image.height = this.image.height / this.num
+      }
+    },
+    handleScroll (e) {
+      const eventDelta = e.wheelDelta || -e.deltaY * 40
+      if (eventDelta > 0) {
+        this.add()
+      } else {
+        this.del()
+      }
+      this.canvas.width = this.image.width
+      this.canvas.height = this.image.height
+      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
+      this.ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height)
+      this.draw(this.plane1, this.plane2)
+    },
     handleRemove () {
       this.ctx.clearRect(0, 0, this.image.width, this.image.height)
     },
@@ -189,10 +218,14 @@ export default {
       console.log(file)
       this.chose(file.raw)
     },
+    // 图片上传成功回调
+    success (response) {
+      this.val.image = response.data
+    },
     init () {
       if (this.val.image) {
         this.image = new Image()
-        this.image.src = this.val.image
+        this.image.src = this.baseApi + 'boundary/images/' + this.val.image
         this.image.onload = () => {
           this.canvasDrawImg()
           if (this.val.point) {
@@ -240,7 +273,6 @@ export default {
         this.image.src = window.URL.createObjectURL(raw)
         this.image.onload = () => {
           this.canvasDrawImg()
-          this.val.image = this.baseImg()
         }
       }
     },
@@ -259,6 +291,8 @@ export default {
       var diffY = event.clientY - rect.top
       var x = (diffX / this.canvas.width).toFixed(10)
       var y = (diffY / this.canvas.height).toFixed(10)
+      console.log(x)
+      console.log(y)
       if (this.active === 1) {
         this.plane1 = `${x},${y}`
       }
@@ -307,14 +341,16 @@ export default {
     }
 
     .other {
-      width: 1078px;
-      overflow-x: auto;
+      width: 1200px;
       margin-left: 50px;
       display: flex;
       align-items: flex-start;
 
       .common {
-        width: 400px;
+        width: 100%;
+        position: relative;
+        height: 560px;
+        overflow: hidden;
         i {
           margin-left: 10px;
           cursor: pointer;
@@ -334,50 +370,11 @@ export default {
             font-size: 30px;
           }
         }
-      }
-      .file {
-        margin-left: 20px;
-        width: auto;
-      }
-      .pic{
-        overflow: auto;
+        #myCanvas{
+          position: absolute;
+        }
       }
     }
-  }
-}
-
-.common {
-  .file {
-    cursor: pointer;
-    position: relative;
-    display: inline-block;
-    background: #D0EEFF;
-    border: 1px solid #99D3F5;
-    border-radius: 4px;
-    padding: 4px 12px;
-    overflow: hidden;
-    color: #1E88C7;
-    text-decoration: none;
-    text-indent: 0;
-    line-height: 20px;
-    margin-right: 30px;
-  }
-
-  .file input {
-    position: absolute;
-    font-size: 100px;
-    right: 0;
-    top: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .file:hover {
-    background: #AADFFD;
-    border-color: #78C3F3;
-    color: #004974;
-    text-decoration: none;
   }
 }
 .upload-demo{
