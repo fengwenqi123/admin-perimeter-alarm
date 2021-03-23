@@ -87,8 +87,10 @@ ul{
     width: 1740px;
     left: 180px;
   }
-  .el-dialog{
-    //left: -1920px;
+}
+.alarm{
+  .el-dialog__wrapper{
+    width: 1920px;
   }
 }
 .el-dropdown-menu{

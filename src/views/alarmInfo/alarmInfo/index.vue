@@ -1,5 +1,5 @@
 <template>
-  <div class="common-table">
+  <div class="common-table alarm">
     <div class="title">
       <title-header/>
     </div>
